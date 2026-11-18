@@ -1,0 +1,6 @@
+panel,method,series,fallbacks
+Solar,Persistence (last value),2295,0
+Solar,"Holt-Winters, additive weekly season",2295,0
+Solar,"STL + ETS, damped trend",2295,0
+Solar,"Theta, weekly deseasonalized",2295,0
+Solar,"SARIMA(1,0,0)(0,1,1)7, fixed order",2295,0

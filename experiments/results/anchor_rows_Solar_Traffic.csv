@@ -1,0 +1,151 @@
+panel,split,seed,manifest,method,n_train,n_test,mae_cat,mae_total,alpha
+Solar,Flat -> WorkWeek,0,A,Target-trained reference (ERM-MLP),21,10,0.076841086,0.21256764,
+Solar,Flat -> WorkWeek,0,A,ERM-MLP,21,10,0.08515383,0.23939848,
+Solar,Flat -> WorkWeek,0,A,source error (s_te),21,10,0.07283893,0.20029601,
+Solar,Flat -> WorkWeek,0,A,Seasonal naive,21,10,0.10822795,0.31112358,
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.1,21,10,0.084474534,0.23779777,0.1
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.25,21,10,0.08497323,0.23982427,0.25
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.4,21,10,0.08690366,0.24607196,0.4
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.5,21,10,0.08886835,0.25236338,0.5
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.6,21,10,0.09142695,0.26032203,0.6
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.75,21,10,0.09642432,0.2758256,0.75
+Solar,Flat -> WorkWeek,0,A,Fixed blend a=0.9,21,10,0.10295667,0.29555416,0.9
+Solar,Flat -> WorkWeek,0,A,"Blend, a chosen on source validation",21,10,0.08515383,0.23939848,0.0
+Solar,Flat -> WorkWeek,0,A,FADE gate only (static),21,10,0.08503266,0.2390389,
+Solar,Flat -> WorkWeek,0,A,FADE periodicity only,21,10,0.08456864,0.23813865,
+Solar,Flat -> WorkWeek,0,A,FADE (gate + periodicity),21,10,0.08401491,0.23661461,
+Solar,Flat -> WorkWeek,1,A,Target-trained reference (ERM-MLP),21,10,0.08239324,0.22716255,
+Solar,Flat -> WorkWeek,1,A,ERM-MLP,21,10,0.089198776,0.24936458,
+Solar,Flat -> WorkWeek,1,A,source error (s_te),21,10,0.07543617,0.20589502,
+Solar,Flat -> WorkWeek,1,A,Seasonal naive,21,10,0.11118571,0.31967437,
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.1,21,10,0.08872068,0.24869692,0.1
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.25,21,10,0.08927413,0.25127578,0.25
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.4,21,10,0.091016136,0.2571991,0.4
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.5,21,10,0.09292625,0.26330853,0.5
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.6,21,10,0.09531744,0.2709983,0.6
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.75,21,10,0.099929035,0.28557694,0.75
+Solar,Flat -> WorkWeek,1,A,Fixed blend a=0.9,21,10,0.10618547,0.30468798,0.9
+Solar,Flat -> WorkWeek,1,A,"Blend, a chosen on source validation",21,10,0.08872068,0.24869692,0.1
+Solar,Flat -> WorkWeek,1,A,FADE gate only (static),21,10,0.08919956,0.2493939,
+Solar,Flat -> WorkWeek,1,A,FADE periodicity only,21,10,0.08844409,0.24779291,
+Solar,Flat -> WorkWeek,1,A,FADE (gate + periodicity),21,10,0.08854039,0.2481821,
+Solar,Flat -> WorkWeek,2,A,Target-trained reference (ERM-MLP),21,10,0.07768347,0.21146445,
+Solar,Flat -> WorkWeek,2,A,ERM-MLP,21,10,0.08621643,0.23774388,
+Solar,Flat -> WorkWeek,2,A,source error (s_te),21,10,0.074254185,0.20575228,
+Solar,Flat -> WorkWeek,2,A,Seasonal naive,21,10,0.11062558,0.31804022,
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.1,21,10,0.08566362,0.23729643,0.1
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.25,21,10,0.08603103,0.24008021,0.25
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.4,21,10,0.08804176,0.24791074,0.4
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.5,21,10,0.09026691,0.25555462,0.5
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.6,21,10,0.09313355,0.2648452,0.6
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.75,21,10,0.09847377,0.28155476,0.75
+Solar,Flat -> WorkWeek,2,A,Fixed blend a=0.9,21,10,0.10531096,0.3022058,0.9
+Solar,Flat -> WorkWeek,2,A,"Blend, a chosen on source validation",21,10,0.08566362,0.23729643,0.1
+Solar,Flat -> WorkWeek,2,A,FADE gate only (static),21,10,0.08614318,0.23754856,
+Solar,Flat -> WorkWeek,2,A,FADE periodicity only,21,10,0.08560111,0.23731689,
+Solar,Flat -> WorkWeek,2,A,FADE (gate + periodicity),21,10,0.08512746,0.23601703,
+Solar,Flat -> WorkWeek,3,A,Target-trained reference (ERM-MLP),21,10,0.07900627,0.21937819,
+Solar,Flat -> WorkWeek,3,A,ERM-MLP,21,10,0.084329806,0.23610957,
+Solar,Flat -> WorkWeek,3,A,source error (s_te),21,10,0.071362235,0.19591597,
+Solar,Flat -> WorkWeek,3,A,Seasonal naive,21,10,0.10992588,0.3179269,
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.1,21,10,0.08369058,0.23539773,0.1
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.25,21,10,0.084527336,0.23907852,0.25
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.4,21,10,0.086738035,0.2465909,0.4
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.5,21,10,0.088981904,0.25384897,0.5
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.6,21,10,0.09186001,0.26288387,0.6
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.75,21,10,0.09732683,0.27982634,0.75
+Solar,Flat -> WorkWeek,3,A,Fixed blend a=0.9,21,10,0.104420744,0.3012976,0.9
+Solar,Flat -> WorkWeek,3,A,"Blend, a chosen on source validation",21,10,0.08369058,0.23539773,0.1
+Solar,Flat -> WorkWeek,3,A,FADE gate only (static),21,10,0.08431936,0.23610191,
+Solar,Flat -> WorkWeek,3,A,FADE periodicity only,21,10,0.08363481,0.23521414,
+Solar,Flat -> WorkWeek,3,A,FADE (gate + periodicity),21,10,0.08355125,0.23520324,
+Solar,Flat -> WorkWeek,4,A,Target-trained reference (ERM-MLP),21,10,0.078979,0.21740802,
+Solar,Flat -> WorkWeek,4,A,ERM-MLP,21,10,0.08354795,0.23207632,
+Solar,Flat -> WorkWeek,4,A,source error (s_te),21,10,0.07720686,0.21381311,
+Solar,Flat -> WorkWeek,4,A,Seasonal naive,21,10,0.11009264,0.3158627,
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.1,21,10,0.08341811,0.23284507,0.1
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.25,21,10,0.08468087,0.23798203,0.25
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.4,21,10,0.08719064,0.24630976,0.4
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.5,21,10,0.08954404,0.25366697,0.5
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.6,21,10,0.092423275,0.26254177,0.6
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.75,21,10,0.09788243,0.2787841,0.75
+Solar,Flat -> WorkWeek,4,A,Fixed blend a=0.9,21,10,0.10472932,0.2997706,0.9
+Solar,Flat -> WorkWeek,4,A,"Blend, a chosen on source validation",21,10,0.08354795,0.23207632,0.0
+Solar,Flat -> WorkWeek,4,A,FADE gate only (static),21,10,0.08351968,0.2319378,
+Solar,Flat -> WorkWeek,4,A,FADE periodicity only,21,10,0.08346779,0.23302719,
+Solar,Flat -> WorkWeek,4,A,FADE (gate + periodicity),21,10,0.08336867,0.23260471,
+Traffic,Flat -> WorkWeek,0,A,Target-trained reference (ERM-MLP),109,75,0.061985556,0.14661561,
+Traffic,Flat -> WorkWeek,0,A,ERM-MLP,109,75,0.062532626,0.15165697,
+Traffic,Flat -> WorkWeek,0,A,source error (s_te),109,75,0.052277084,0.12422749,
+Traffic,Flat -> WorkWeek,0,A,Seasonal naive,109,75,0.06354116,0.15661435,
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.1,109,75,0.060996335,0.14804853,0.1
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.25,109,75,0.05934035,0.14423361,0.25
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.4,109,75,0.05846335,0.14242823,0.4
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.5,109,75,0.05830466,0.14230986,0.5
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.6,109,75,0.058515344,0.14307496,0.6
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.75,109,75,0.05954575,0.14605172,0.75
+Traffic,Flat -> WorkWeek,0,A,Fixed blend a=0.9,109,75,0.061535828,0.15143558,0.9
+Traffic,Flat -> WorkWeek,0,A,"Blend, a chosen on source validation",109,75,0.05830466,0.14230986,0.5
+Traffic,Flat -> WorkWeek,0,A,FADE gate only (static),109,75,0.062446862,0.15130366,
+Traffic,Flat -> WorkWeek,0,A,FADE periodicity only,109,75,0.05965949,0.14651224,
+Traffic,Flat -> WorkWeek,0,A,FADE (gate + periodicity),109,75,0.059583582,0.14625563,
+Traffic,Flat -> WorkWeek,1,A,Target-trained reference (ERM-MLP),109,75,0.061602727,0.14914025,
+Traffic,Flat -> WorkWeek,1,A,ERM-MLP,109,75,0.061987177,0.15202475,
+Traffic,Flat -> WorkWeek,1,A,source error (s_te),109,75,0.051508997,0.12472493,
+Traffic,Flat -> WorkWeek,1,A,Seasonal naive,109,75,0.061783917,0.1542791,
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.1,109,75,0.06031231,0.14806823,0.1
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.25,109,75,0.058461234,0.14384301,0.25
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.4,109,75,0.057386756,0.14148352,0.4
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.5,109,75,0.057101104,0.14104557,0.5
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.6,109,75,0.057165496,0.14152205,0.6
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.75,109,75,0.05800034,0.14408325,0.75
+Traffic,Flat -> WorkWeek,1,A,Fixed blend a=0.9,109,75,0.059846543,0.14917494,0.9
+Traffic,Flat -> WorkWeek,1,A,"Blend, a chosen on source validation",109,75,0.057101104,0.14104557,0.5
+Traffic,Flat -> WorkWeek,1,A,FADE gate only (static),109,75,0.062066842,0.1522693,
+Traffic,Flat -> WorkWeek,1,A,FADE periodicity only,109,75,0.058095627,0.14413589,
+Traffic,Flat -> WorkWeek,1,A,FADE (gate + periodicity),109,75,0.05811516,0.1440867,
+Traffic,Flat -> WorkWeek,2,A,Target-trained reference (ERM-MLP),109,75,0.06014975,0.1430611,
+Traffic,Flat -> WorkWeek,2,A,ERM-MLP,109,75,0.060503077,0.14720751,
+Traffic,Flat -> WorkWeek,2,A,source error (s_te),109,75,0.056978963,0.13705145,
+Traffic,Flat -> WorkWeek,2,A,Seasonal naive,109,75,0.0604828,0.1500876,
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.1,109,75,0.05883836,0.14325461,0.1
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.25,109,75,0.05699495,0.13908745,0.25
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.4,109,75,0.05593568,0.13691975,0.4
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.5,109,75,0.055679187,0.136621,0.5
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.6,109,75,0.05578818,0.13719963,0.6
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.75,109,75,0.056678478,0.1399272,0.75
+Traffic,Flat -> WorkWeek,2,A,Fixed blend a=0.9,109,75,0.05854948,0.14506708,0.9
+Traffic,Flat -> WorkWeek,2,A,"Blend, a chosen on source validation",109,75,0.055679187,0.136621,0.5
+Traffic,Flat -> WorkWeek,2,A,FADE gate only (static),109,75,0.060382556,0.14654437,
+Traffic,Flat -> WorkWeek,2,A,FADE periodicity only,109,75,0.05671349,0.13983405,
+Traffic,Flat -> WorkWeek,2,A,FADE (gate + periodicity),109,75,0.056653336,0.13939795,
+Traffic,Flat -> WorkWeek,3,A,Target-trained reference (ERM-MLP),109,75,0.06554268,0.15643564,
+Traffic,Flat -> WorkWeek,3,A,ERM-MLP,109,75,0.06562297,0.15960295,
+Traffic,Flat -> WorkWeek,3,A,source error (s_te),109,75,0.051651053,0.12146768,
+Traffic,Flat -> WorkWeek,3,A,Seasonal naive,109,75,0.0664612,0.16513254,
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.1,109,75,0.06394663,0.1557171,0.1
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.25,109,75,0.062117774,0.15168808,0.25
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.4,109,75,0.061110515,0.14982185,0.4
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.5,109,75,0.060917106,0.14983666,0.5
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.6,109,75,0.061126042,0.15076199,0.6
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.75,109,75,0.062217686,0.15401334,0.75
+Traffic,Flat -> WorkWeek,3,A,Fixed blend a=0.9,109,75,0.06433487,0.15967163,0.9
+Traffic,Flat -> WorkWeek,3,A,"Blend, a chosen on source validation",109,75,0.060917106,0.14983666,0.5
+Traffic,Flat -> WorkWeek,3,A,FADE gate only (static),109,75,0.06562015,0.15922655,
+Traffic,Flat -> WorkWeek,3,A,FADE periodicity only,109,75,0.061924808,0.15293396,
+Traffic,Flat -> WorkWeek,3,A,FADE (gate + periodicity),109,75,0.061842225,0.15254247,
+Traffic,Flat -> WorkWeek,4,A,Target-trained reference (ERM-MLP),109,75,0.05972571,0.14256711,
+Traffic,Flat -> WorkWeek,4,A,ERM-MLP,109,75,0.061229635,0.15037712,
+Traffic,Flat -> WorkWeek,4,A,source error (s_te),109,75,0.049674675,0.11890305,
+Traffic,Flat -> WorkWeek,4,A,Seasonal naive,109,75,0.060883947,0.15080324,
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.1,109,75,0.059590332,0.1463417,0.1
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.25,109,75,0.05776533,0.1418798,0.25
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.4,109,75,0.05668964,0.13928743,0.4
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.5,109,75,0.056389187,0.13861161,0.5
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.6,109,75,0.05643689,0.13882886,0.6
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.75,109,75,0.057232972,0.141067,0.75
+Traffic,Flat -> WorkWeek,4,A,Fixed blend a=0.9,109,75,0.05900624,0.14589193,0.9
+Traffic,Flat -> WorkWeek,4,A,"Blend, a chosen on source validation",109,75,0.056389187,0.13861161,0.5
+Traffic,Flat -> WorkWeek,4,A,FADE gate only (static),109,75,0.06102893,0.14963639,
+Traffic,Flat -> WorkWeek,4,A,FADE periodicity only,109,75,0.057046458,0.14068343,
+Traffic,Flat -> WorkWeek,4,A,FADE (gate + periodicity),109,75,0.05696419,0.14029157,

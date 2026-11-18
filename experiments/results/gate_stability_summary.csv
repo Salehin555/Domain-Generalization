@@ -1,0 +1,2 @@
+n_runs,mean_between_run_corr,min_between_run_corr,disjoint_half_corr,gate_icc_r_mean,gate_icc_r_min,gate_icc_r_max,mean_gate_cell_sd,max_abs_gate_deviation,retained_energy_min,retained_energy_mean,gate_vs_erm_mae_cat_pct,gate_vs_erm_mae_total_pct
+11,0.6765299046330506,0.3481403288875368,0.9847593017671897,0.1720852705304192,0.04804462720332253,0.3438478667295327,0.050033342093229294,0.2350480556488037,0.9842390418052673,1.0779153108596802,0.0641368180513382,0.043229784816503525

@@ -1,0 +1,44 @@
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize,
+  >={Stealth[length=2.2mm,width=1.7mm]},
+  base/.style={rectangle, rounded corners=2pt, draw=#1, line width=0.6pt, align=center,
+               inner xsep=4pt, inner ysep=5pt, text width=26mm, minimum height=16mm,
+               execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}},
+  neutral/.style={base=black!50, fill=black!3},
+  qtwo/.style={base=okorange, fill=okorange!6},
+  qone/.style={base=okblue, fill=okblue!6},
+  endbox/.style={base=black!50, fill=white, minimum height=9mm},
+  stepnum/.style={circle, draw=black!60, fill=white, line width=0.5pt, inner sep=0pt,
+                  minimum size=4mm, font=\scriptsize\bfseries},
+  arr/.style={->, line width=0.7pt, draw=black!65, shorten <=1.5pt, shorten >=1.5pt},
+  lab/.style={font=\scriptsize, text=black!60},
+  sec/.style={font=\scriptsize, text=black!55}
+]
+\node[neutral] (start) {\textbf{New group}\\[2pt] the model in service is less accurate there};
+\node[neutral, right=11mm of start] (cov) {\textbf{Calendar check}\\[2pt] history covers the deployment months?};
+\node[qtwo, right=11mm of cov] (q2) {\textbf{Q2. Improve}\\[2pt] without target data};
+\node[qone, right=11mm of q2] (q1) {\textbf{Q1. Estimate $E$}\\[2pt] residual headroom of retraining};
+\node[endbox, below=10mm of cov] (fall) {Blend with seasonal naive};
+\node[endbox, below=10mm of q1, xshift=-16mm] (keep) {Keep the improved model};
+\node[endbox, below=10mm of q1, xshift=16mm] (retr) {Retrain on the target group};
+% section references under the boxes
+\node[sec, above=1.5mm of cov] {Sec.~\ref{sec:6.2}};
+\node[sec, above=1.5mm of q2] {Secs.~\ref{sec:6.3}, \ref{sec:7}};
+\node[sec, above=1.5mm of q1] {Secs.~\ref{sec:3}, \ref{sec:6.2}};
+% arrows and labels (labels beside the lines, never on them)
+\draw[arr] (start) -- (cov);
+\draw[arr] (cov) -- node[lab, above=1.5pt] {yes} (q2);
+\draw[arr] (cov) -- node[lab, right=2pt] {no} (fall);
+\draw[arr] (q2) -- (q1);
+\coordinate (split) at ($(q1.south)+(0,-4mm)$);
+\draw[line width=0.7pt, draw=black!65, shorten <=1.5pt] (q1.south) -- (split);
+\draw[arr] (split) -| node[lab, pos=0.78, left=2pt] {$E<c$} (keep.north);
+\draw[arr] (split) -| node[lab, pos=0.78, right=2pt] {$E\ge c$} (retr.north);
+% step numbers
+\foreach \n/\k in {cov/1, q2/2, q1/3} { \node[stepnum] at (\n.north west) {\k}; }
+\end{tikzpicture}
+\caption{\textbf{The decision procedure.} When a model in service is less accurate on a new group of entities, (1) a calendar check made from dates alone decides whether estimates from the observed history can be trusted; if not, the model is only blended with seasonal naive. Otherwise (2) the model is improved without target data, by training longer and blending or combining it with seasonal and classical forecasts chosen on source validation (Q2), and (3) the residual benefit of retraining on the target group is estimated against the improved model, at the deployment budget (Q1). The group is retrained on only if the estimate $E$ is at least the retraining cost $c$. Candidate groupings can optionally be ordered first by an input screen (Section~\ref{sec:6.1}). All outcomes depend on the models, data, budget and metric tested.}
+\label{fig:1}
+\end{figure*}

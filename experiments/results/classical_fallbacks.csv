@@ -1,0 +1,16 @@
+panel,method,series,fallbacks,constant_series
+Electricity,Persistence (last value),25404,0,0
+Electricity,"Holt-Winters, additive weekly season",25404,65,0
+Electricity,"STL + ETS, damped trend",25404,57,0
+Electricity,"Theta, weekly deseasonalized",25404,54,0
+Electricity,"SARIMA(1,0,0)(0,1,1)7, fixed order",25404,88,0
+Traffic,Persistence (last value),34743,0,0
+Traffic,"Holt-Winters, additive weekly season",34743,346,0
+Traffic,"STL + ETS, damped trend",34743,338,0
+Traffic,"Theta, weekly deseasonalized",34743,324,0
+Traffic,"SARIMA(1,0,0)(0,1,1)7, fixed order",34743,419,0
+Solar,Persistence (last value),2295,0,0
+Solar,"Holt-Winters, additive weekly season",2295,0,0
+Solar,"STL + ETS, damped trend",2295,0,0
+Solar,"Theta, weekly deseasonalized",2295,0,0
+Solar,"SARIMA(1,0,0)(0,1,1)7, fixed order",2295,1,0

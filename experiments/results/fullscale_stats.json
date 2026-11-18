@@ -1,0 +1,33 @@
+{
+ "n_facilities_test": {
+  "LFO-T": 10192,
+  "LFO": 10192,
+  "LSO-T": 11391
+ },
+ "seeds": {
+  "IRM (penalty active)": 3,
+  "CORAL (penalty active)": 3,
+  "DANN (penalty active)": 3,
+  "Autoformer": 1,
+  "FEDformer": 1,
+  "ERM-DLinear": 5,
+  "ERM-MLP": 5,
+  "Wave-Mask": 5,
+  "IRM": 5,
+  "CORAL": 5,
+  "DANN": 5,
+  "GroupDRO": 5,
+  "Batch-softmax reweighting (former GroupDRO)": 5,
+  "FixedBand": 5,
+  "FADE gate only (static)": 5,
+  "FADE (gate + periodicity)": 5
+ },
+ "max_abs_pct_vs_erm": {
+  "mae_cat|LFO": 4.5097490056546405,
+  "mae_cat|LFO-T": 4.500737865033041,
+  "mae_cat|LSO-T": 4.741606524267327,
+  "mae_total|LFO": 5.956825456258627,
+  "mae_total|LFO-T": 6.030107533045885,
+  "mae_total|LSO-T": 6.473490549239909
+ }
+}

@@ -1,0 +1,6 @@
+panel,split,seed,retrained,case_study
+Solar,Flat -> WorkWeek,0,0.08515383,0.08515383
+Solar,Flat -> WorkWeek,1,0.089198776,0.089198776
+Solar,Flat -> WorkWeek,2,0.08621643,0.08621643
+Solar,Flat -> WorkWeek,3,0.084329806,0.084329806
+Solar,Flat -> WorkWeek,4,0.08354795,0.08354795

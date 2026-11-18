@@ -1,0 +1,7 @@
+panel,variant,windows,imputed_target_windows,post_origin_input_windows,excluded_windows
+Nursing,standard,,,,
+Electricity,standard,,,,
+Traffic,standard,,,,
+Solar,standard,,,,
+Nursing,clean,44400.0,65.0,15.0,66.0
+Nursing,prospective,44400.0,,,503.0

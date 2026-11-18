@@ -1,0 +1,24 @@
+panel,split,seed,n_tr,n_va,n_te
+Electricity,Flat -> WorkWeek,0,41,11,27
+Electricity,Flat -> WorkWeek,1,41,11,27
+Electricity,Flat -> WorkWeek,2,41,11,27
+Electricity,Flat -> WorkWeek,3,41,11,27
+Electricity,Flat -> WorkWeek,4,41,11,27
+Electricity,WorkWeek -> Flat,0,41,11,27
+Electricity,WorkWeek -> Flat,1,41,11,27
+Electricity,WorkWeek -> Flat,2,41,11,27
+Electricity,WorkWeek -> Flat,3,41,11,27
+Electricity,WorkWeek -> Flat,4,41,11,27
+Solar,Flat -> WorkWeek,0,21,4,10
+Solar,Flat -> WorkWeek,1,21,4,10
+Solar,Flat -> WorkWeek,2,21,4,10
+Solar,Flat -> WorkWeek,3,21,4,10
+Solar,Flat -> WorkWeek,4,21,4,10
+Traffic,Flat -> WorkWeek,0,109,32,75
+Traffic,Flat -> WorkWeek,1,109,32,75
+Traffic,Flat -> WorkWeek,2,109,32,75
+Traffic,Flat -> WorkWeek,3,109,32,75
+Traffic,Flat -> WorkWeek,4,109,32,75
+Nursing,Ownership (For-profit -> Non-profit),0,1350,400,800
+Nursing,Ownership (For-profit -> Non-profit),1,1350,400,800
+Nursing,Ownership (For-profit -> Non-profit),2,1350,400,800

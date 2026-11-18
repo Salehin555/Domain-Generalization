@@ -1,0 +1,11 @@
+{
+ "n_full": 8,
+ "n_partial": 7,
+ "full_min_r": 0.7803194577670184,
+ "full_median_r": 0.9367012897396875,
+ "partial_max_r": 0.7912874378290635,
+ "partial_median_r": 0.579163961776118,
+ "full_max_bias": 1.9235222244999999,
+ "partial_median_bias": 4.90042221875,
+ "spearman_coverage_r": 0.865784952186958
+}

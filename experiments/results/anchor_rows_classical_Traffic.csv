@@ -1,0 +1,36 @@
+panel,split,seed,manifest,method,n_train,n_test,mae_cat,mae_total,w_model,w_snaive,w_persistence,w_holt-winters
+Traffic,Flat -> WorkWeek,0,A,Persistence (last value),0,75,0.12439661473035812,0.340320348739624,,,,
+Traffic,Flat -> WorkWeek,0,A,"Holt-Winters, additive weekly season",0,75,0.06034986674785614,0.14198099076747894,,,,
+Traffic,Flat -> WorkWeek,0,A,"STL + ETS, damped trend",0,75,0.0662200078368187,0.15974941849708557,,,,
+Traffic,Flat -> WorkWeek,0,A,"Theta, weekly deseasonalized",0,75,0.0625748485326767,0.1502637416124344,,,,
+Traffic,Flat -> WorkWeek,0,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,75,0.057273074984550476,0.13560894131660461,,,,
+Traffic,Flat -> WorkWeek,0,A,"Combination: source model, seasonal naive, persistence",109,75,0.05830466349120362,0.14230985439347735,0.5,0.5,0.0,
+Traffic,Flat -> WorkWeek,0,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",109,75,0.05695073594255543,0.13710452044658236,0.3,0.3,0.0,0.4
+Traffic,Flat -> WorkWeek,1,A,Persistence (last value),0,75,0.12165812402963638,0.33302465081214905,,,,
+Traffic,Flat -> WorkWeek,1,A,"Holt-Winters, additive weekly season",0,75,0.05883428454399109,0.14091739058494568,,,,
+Traffic,Flat -> WorkWeek,1,A,"STL + ETS, damped trend",0,75,0.06527647376060486,0.1606622189283371,,,,
+Traffic,Flat -> WorkWeek,1,A,"Theta, weekly deseasonalized",0,75,0.06091930344700813,0.14864811301231384,,,,
+Traffic,Flat -> WorkWeek,1,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,75,0.05628751590847969,0.1353544443845749,,,,
+Traffic,Flat -> WorkWeek,1,A,"Combination: source model, seasonal naive, persistence",109,75,0.05710110119561791,0.1410455649368471,0.5,0.5,0.0,
+Traffic,Flat -> WorkWeek,1,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",109,75,0.05561742250239031,0.13602174259209948,0.3,0.3,0.0,0.4
+Traffic,Flat -> WorkWeek,2,A,Persistence (last value),0,75,0.12231281399726868,0.33635178208351135,,,,
+Traffic,Flat -> WorkWeek,2,A,"Holt-Winters, additive weekly season",0,75,0.05786224454641342,0.1380401849746704,,,,
+Traffic,Flat -> WorkWeek,2,A,"STL + ETS, damped trend",0,75,0.06347030401229858,0.15560367703437805,,,,
+Traffic,Flat -> WorkWeek,2,A,"Theta, weekly deseasonalized",0,75,0.06287992745637894,0.15513327717781067,,,,
+Traffic,Flat -> WorkWeek,2,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,75,0.05506797134876251,0.13181601464748383,,,,
+Traffic,Flat -> WorkWeek,2,A,"Combination: source model, seasonal naive, persistence",109,75,0.05567918484310571,0.1366209937881605,0.5,0.5,0.0,
+Traffic,Flat -> WorkWeek,2,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",109,75,0.054531483658054526,0.13237854313868305,0.3,0.3,0.0,0.4
+Traffic,Flat -> WorkWeek,3,A,Persistence (last value),0,75,0.12669479846954346,0.3460268974304199,,,,
+Traffic,Flat -> WorkWeek,3,A,"Holt-Winters, additive weekly season",0,75,0.06316716223955154,0.15038831532001495,,,,
+Traffic,Flat -> WorkWeek,3,A,"STL + ETS, damped trend",0,75,0.06964682042598724,0.1694963127374649,,,,
+Traffic,Flat -> WorkWeek,3,A,"Theta, weekly deseasonalized",0,75,0.0654594674706459,0.15854154527187347,,,,
+Traffic,Flat -> WorkWeek,3,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,75,0.059995993971824646,0.1436632126569748,,,,
+Traffic,Flat -> WorkWeek,3,A,"Combination: source model, seasonal naive, persistence",109,75,0.060917099356669065,0.14983665047184552,0.5,0.5,0.0,
+Traffic,Flat -> WorkWeek,3,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",109,75,0.05960559218904251,0.14569343350933842,0.3,0.4,0.0,0.3
+Traffic,Flat -> WorkWeek,4,A,Persistence (last value),0,75,0.12230588495731354,0.3366726040840149,,,,
+Traffic,Flat -> WorkWeek,4,A,"Holt-Winters, additive weekly season",0,75,0.05906751751899719,0.1404268741607666,,,,
+Traffic,Flat -> WorkWeek,4,A,"STL + ETS, damped trend",0,75,0.06436613202095032,0.15680740773677826,,,,
+Traffic,Flat -> WorkWeek,4,A,"Theta, weekly deseasonalized",0,75,0.0641879066824913,0.15793973207473755,,,,
+Traffic,Flat -> WorkWeek,4,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,75,0.05600214749574661,0.13351504504680634,,,,
+Traffic,Flat -> WorkWeek,4,A,"Combination: source model, seasonal naive, persistence",109,75,0.05638918189344918,0.1386116007690716,0.5,0.5,0.0,
+Traffic,Flat -> WorkWeek,4,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",109,75,0.05529401908991783,0.13468524392963502,0.3,0.4,0.0,0.3

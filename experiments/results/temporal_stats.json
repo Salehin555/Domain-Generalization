@@ -1,0 +1,662 @@
+{
+ "temporal": [
+  {
+   "panel": "Electricity",
+   "variant": "standard",
+   "metric": "mae_cat",
+   "span_months": 24,
+   "n": 18,
+   "n_splits": 9,
+   "pearson": 0.9712029179334456,
+   "spearman": 0.9484004127966976,
+   "bias": 1.1581377477777783,
+   "agree": 0.8888888888888888,
+   "realised_mean": 8.171071613333332
+  },
+  {
+   "panel": "Electricity",
+   "variant": "standard",
+   "metric": "mae_total",
+   "span_months": 24,
+   "n": 18,
+   "n_splits": 9,
+   "pearson": 0.969919814870162,
+   "spearman": 0.9649122807017543,
+   "bias": 1.3899698272222227,
+   "agree": 0.9444444444444444,
+   "realised_mean": 9.354651017222222
+  },
+  {
+   "panel": "Nursing",
+   "variant": "clean",
+   "metric": "mae_cat",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.9632086059625387,
+   "spearman": 0.9130434782608695,
+   "bias": 0.19908390325000003,
+   "agree": 1.0,
+   "realised_mean": 0.16956152020833334
+  },
+  {
+   "panel": "Nursing",
+   "variant": "clean",
+   "metric": "mae_total",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.9265691564176001,
+   "spearman": 0.7852173913043478,
+   "bias": 0.5007834640416666,
+   "agree": 1.0,
+   "realised_mean": 0.7817453362083334
+  },
+  {
+   "panel": "Nursing",
+   "variant": "prospective",
+   "metric": "mae_cat",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.959181647158402,
+   "spearman": 0.9408695652173911,
+   "bias": 0.2857826235,
+   "agree": 1.0,
+   "realised_mean": 0.12376835149999998
+  },
+  {
+   "panel": "Nursing",
+   "variant": "prospective",
+   "metric": "mae_total",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.9237802469911267,
+   "spearman": 0.7513043478260868,
+   "bias": 0.58531779825,
+   "agree": 0.9166666666666666,
+   "realised_mean": 0.6945263435833334
+  },
+  {
+   "panel": "Nursing",
+   "variant": "standard",
+   "metric": "mae_cat",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.9590044226488236,
+   "spearman": 0.9017391304347826,
+   "bias": 0.22395924094166667,
+   "agree": 1.0,
+   "realised_mean": 0.16552577983333336
+  },
+  {
+   "panel": "Nursing",
+   "variant": "standard",
+   "metric": "mae_total",
+   "span_months": 12,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.9243818071969633,
+   "spearman": 0.7999999999999999,
+   "bias": 0.5377621667083333,
+   "agree": 1.0,
+   "realised_mean": 0.7796466093333333
+  },
+  {
+   "panel": "Solar",
+   "variant": "standard",
+   "metric": "mae_cat",
+   "span_months": 8,
+   "n": 16,
+   "n_splits": 8,
+   "pearson": -0.07159880189034709,
+   "spearman": 0.03529411764705882,
+   "bias": 6.3396866168125,
+   "agree": 0.1875,
+   "realised_mean": 0.026807270687500023
+  },
+  {
+   "panel": "Solar",
+   "variant": "standard",
+   "metric": "mae_total",
+   "span_months": 8,
+   "n": 16,
+   "n_splits": 8,
+   "pearson": -0.033652279010510155,
+   "spearman": 0.07058823529411765,
+   "bias": 7.1975807208125,
+   "agree": 0.1875,
+   "realised_mean": 0.015204918562499975
+  },
+  {
+   "panel": "Traffic",
+   "variant": "standard",
+   "metric": "mae_cat",
+   "span_months": 16,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.8074334548095652,
+   "spearman": 0.8017391304347825,
+   "bias": 1.1900143508333334,
+   "agree": 0.75,
+   "realised_mean": 0.4182907437499999
+  },
+  {
+   "panel": "Traffic",
+   "variant": "standard",
+   "metric": "mae_total",
+   "span_months": 16,
+   "n": 24,
+   "n_splits": 12,
+   "pearson": 0.7462144641884833,
+   "spearman": 0.6799999999999999,
+   "bias": 1.7308886451820833,
+   "agree": 0.7916666666666666,
+   "realised_mean": 0.7844441573179166
+  }
+ ],
+ "window_audit": [
+  {
+   "panel": "Nursing",
+   "variant": "standard",
+   "windows": NaN,
+   "imputed_target_windows": NaN,
+   "post_origin_input_windows": NaN,
+   "excluded_windows": NaN
+  },
+  {
+   "panel": "Electricity",
+   "variant": "standard",
+   "windows": NaN,
+   "imputed_target_windows": NaN,
+   "post_origin_input_windows": NaN,
+   "excluded_windows": NaN
+  },
+  {
+   "panel": "Traffic",
+   "variant": "standard",
+   "windows": NaN,
+   "imputed_target_windows": NaN,
+   "post_origin_input_windows": NaN,
+   "excluded_windows": NaN
+  },
+  {
+   "panel": "Solar",
+   "variant": "standard",
+   "windows": NaN,
+   "imputed_target_windows": NaN,
+   "post_origin_input_windows": NaN,
+   "excluded_windows": NaN
+  },
+  {
+   "panel": "Nursing",
+   "variant": "clean",
+   "windows": 44400.0,
+   "imputed_target_windows": 65.0,
+   "post_origin_input_windows": 15.0,
+   "excluded_windows": 66.0
+  },
+  {
+   "panel": "Nursing",
+   "variant": "prospective",
+   "windows": 44400.0,
+   "imputed_target_windows": NaN,
+   "post_origin_input_windows": NaN,
+   "excluded_windows": 503.0
+  }
+ ],
+ "seasonal": [
+  {
+   "panel": "Electricity",
+   "months": 4,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.6794616076515738,
+   "spearman": 0.5705882352941177,
+   "bias": 9.927693979375,
+   "agree": 0.9375,
+   "realised_mean": 8.627264758125001
+  },
+  {
+   "panel": "Electricity",
+   "months": 4,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.652263316739719,
+   "spearman": 0.6352941176470589,
+   "bias": 11.517486120625001,
+   "agree": 0.9375,
+   "realised_mean": 9.523778873125
+  },
+  {
+   "panel": "Electricity",
+   "months": 6,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.606237177342739,
+   "spearman": 0.5529411764705882,
+   "bias": 4.90042221875,
+   "agree": 0.875,
+   "realised_mean": 11.03771969375
+  },
+  {
+   "panel": "Electricity",
+   "months": 6,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.6045609992599211,
+   "spearman": 0.5617647058823529,
+   "bias": 5.78180008125,
+   "agree": 0.875,
+   "realised_mean": 12.3626700375
+  },
+  {
+   "panel": "Electricity",
+   "months": 8,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.7912874378290635,
+   "spearman": 0.7705882352941176,
+   "bias": 3.1190901562500004,
+   "agree": 0.875,
+   "realised_mean": 10.192781525000001
+  },
+  {
+   "panel": "Electricity",
+   "months": 8,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.7781606774256051,
+   "spearman": 0.75,
+   "bias": 3.7210662249999995,
+   "agree": 0.8125,
+   "realised_mean": 11.46168345
+  },
+  {
+   "panel": "Electricity",
+   "months": 12,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.938598057397602,
+   "spearman": 0.9205882352941176,
+   "bias": 1.4733647725,
+   "agree": 1.0,
+   "realised_mean": 9.30549482125
+  },
+  {
+   "panel": "Electricity",
+   "months": 12,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.9345197353425518,
+   "spearman": 0.9205882352941176,
+   "bias": 1.7485901156249994,
+   "agree": 1.0,
+   "realised_mean": 10.533110703125
+  },
+  {
+   "panel": "Electricity",
+   "months": 18,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.9348045220817729,
+   "spearman": 0.9470588235294116,
+   "bias": 1.6390007959375001,
+   "agree": 0.875,
+   "realised_mean": 8.381528297812501
+  },
+  {
+   "panel": "Electricity",
+   "months": 18,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.9327934084823967,
+   "spearman": 0.9088235294117648,
+   "bias": 2.005153513125,
+   "agree": 1.0,
+   "realised_mean": 9.545747668125
+  },
+  {
+   "panel": "Electricity",
+   "months": 24,
+   "metric": "mae_cat",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.9708634227309766,
+   "spearman": 0.961764705882353,
+   "bias": 0.9769781600000005,
+   "agree": 1.0,
+   "realised_mean": 8.90786317125
+  },
+  {
+   "panel": "Electricity",
+   "months": 24,
+   "metric": "mae_total",
+   "n": 16,
+   "n_splits": 8,
+   "pearson": 0.9701069594656602,
+   "spearman": 0.976470588235294,
+   "bias": 1.1835793056250004,
+   "agree": 1.0,
+   "realised_mean": 10.124828894375
+  },
+  {
+   "panel": "Traffic",
+   "months": 4,
+   "metric": "mae_cat",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": -0.06681994222644656,
+   "spearman": 0.04661654135338346,
+   "bias": 5.714933294050001,
+   "agree": 0.5,
+   "realised_mean": -1.59397196405
+  },
+  {
+   "panel": "Traffic",
+   "months": 4,
+   "metric": "mae_total",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.41244210661363795,
+   "spearman": 0.306766917293233,
+   "bias": 4.37520036075,
+   "agree": 0.55,
+   "realised_mean": -0.60612307725
+  },
+  {
+   "panel": "Traffic",
+   "months": 6,
+   "metric": "mae_cat",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.579163961776118,
+   "spearman": 0.49323308270676686,
+   "bias": 3.9851552455000006,
+   "agree": 0.6,
+   "realised_mean": -0.17821980049999997
+  },
+  {
+   "panel": "Traffic",
+   "months": 6,
+   "metric": "mae_total",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.45117421600937074,
+   "spearman": 0.5353383458646617,
+   "bias": 5.7126922129999995,
+   "agree": 0.25,
+   "realised_mean": 0.25055103700000003
+  },
+  {
+   "panel": "Traffic",
+   "months": 8,
+   "metric": "mae_cat",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.41254543328958737,
+   "spearman": 0.3488721804511278,
+   "bias": 3.821078715,
+   "agree": 0.65,
+   "realised_mean": -0.965958355
+  },
+  {
+   "panel": "Traffic",
+   "months": 8,
+   "metric": "mae_total",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.16567688532609745,
+   "spearman": 0.27368421052631575,
+   "bias": 5.440417110499999,
+   "agree": 0.55,
+   "realised_mean": -1.1153242984999998
+  },
+  {
+   "panel": "Traffic",
+   "months": 12,
+   "metric": "mae_cat",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.7803194577670184,
+   "spearman": 0.7428571428571428,
+   "bias": 1.9235222244999999,
+   "agree": 0.8,
+   "realised_mean": 0.11019631949999989
+  },
+  {
+   "panel": "Traffic",
+   "months": 12,
+   "metric": "mae_total",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.493178975187173,
+   "spearman": 0.437593984962406,
+   "bias": 2.9994215595,
+   "agree": 0.55,
+   "realised_mean": 0.297027411
+  },
+  {
+   "panel": "Traffic",
+   "months": 16,
+   "metric": "mae_cat",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.8267829579991598,
+   "spearman": 0.8481203007518796,
+   "bias": 1.2014772837,
+   "agree": 0.8,
+   "realised_mean": 0.3883155233000001
+  },
+  {
+   "panel": "Traffic",
+   "months": 16,
+   "metric": "mae_total",
+   "n": 20,
+   "n_splits": 10,
+   "pearson": 0.7470230850760406,
+   "spearman": 0.7383458646616541,
+   "bias": 1.9021089660000001,
+   "agree": 0.75,
+   "realised_mean": 0.7716081265
+  }
+ ],
+ "history": [
+  {
+   "panel": "Electricity",
+   "metric": "mae_cat",
+   "final": 10.976411566666668,
+   "settle_day": 731,
+   "settle_months": 24.0,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    731
+   ],
+   "curve": [
+    -4.4398496666666665,
+    1.7926814666666668,
+    7.3882311,
+    9.541588566666666,
+    10.394481599999999,
+    10.976411566666668
+   ],
+   "n_splits": 3
+  },
+  {
+   "panel": "Electricity",
+   "metric": "mae_total",
+   "final": 12.316089866666667,
+   "settle_day": 731,
+   "settle_months": 24.0,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    731
+   ],
+   "curve": [
+    -4.6329474,
+    2.3593538666666665,
+    8.3473752,
+    10.68418,
+    11.719398533333333,
+    12.316089866666667
+   ],
+   "n_splits": 3
+  },
+  {
+   "panel": "Nursing",
+   "metric": "mae_cat",
+   "final": 0.5114836775,
+   "settle_day": 245,
+   "settle_months": 8.0,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    366
+   ],
+   "curve": [
+    -13.558903325,
+    -9.485759,
+    -1.033746,
+    0.26914571750000005,
+    0.41182703575,
+    0.5114836775
+   ],
+   "n_splits": 4
+  },
+  {
+   "panel": "Nursing",
+   "metric": "mae_total",
+   "final": 1.951968375,
+   "settle_day": 245,
+   "settle_months": 8.0,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    366
+   ],
+   "curve": [
+    -22.311203,
+    -15.860174749999999,
+    -0.19026074000000004,
+    1.71069369,
+    1.84551546,
+    1.951968375
+   ],
+   "n_splits": 4
+  },
+  {
+   "panel": "Solar",
+   "metric": "mae_cat",
+   "final": -1.1652162396666668,
+   "settle_day": 161,
+   "settle_months": 5.3,
+   "ladder": [
+    77,
+    105,
+    161,
+    244
+   ],
+   "curve": [
+    -3.5360362666666667,
+    -0.3322018766666666,
+    -1.5369078600000001,
+    -1.1652162396666668
+   ],
+   "n_splits": 3
+  },
+  {
+   "panel": "Solar",
+   "metric": "mae_total",
+   "final": -1.2549586243333333,
+   "settle_day": 161,
+   "settle_months": 5.3,
+   "ladder": [
+    77,
+    105,
+    161,
+    244
+   ],
+   "curve": [
+    -3.7071281,
+    -0.39706967666666665,
+    -1.5454526050000001,
+    -1.2549586243333333
+   ],
+   "n_splits": 3
+  },
+  {
+   "panel": "Traffic",
+   "metric": "mae_cat",
+   "final": 1.0963797,
+   "settle_day": 329,
+   "settle_months": 10.8,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    489
+   ],
+   "curve": [
+    -42.3800065,
+    -32.4471055,
+    -4.9800441499999994,
+    -0.73308771625,
+    0.9773889349999999,
+    1.0963797
+   ],
+   "n_splits": 4
+  },
+  {
+   "panel": "Traffic",
+   "metric": "mae_total",
+   "final": 1.755852825,
+   "settle_day": 489,
+   "settle_months": 16.1,
+   "ladder": [
+    77,
+    105,
+    161,
+    245,
+    329,
+    489
+   ],
+   "curve": [
+    -40.98742875,
+    -28.5363775,
+    -1.8435456549999998,
+    1.2316879,
+    2.3824698075,
+    1.755852825
+   ],
+   "n_splits": 4
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+panel,method,series,fallbacks
+Traffic,Persistence (last value),34743,0
+Traffic,"Holt-Winters, additive weekly season",34743,0
+Traffic,"STL + ETS, damped trend",34743,0
+Traffic,"Theta, weekly deseasonalized",34743,0
+Traffic,"SARIMA(1,0,0)(0,1,1)7, fixed order",34743,0

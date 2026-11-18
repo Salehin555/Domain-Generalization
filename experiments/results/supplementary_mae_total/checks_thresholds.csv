@@ -1,0 +1,17 @@
+panel,threshold,split,gap
+Nursing,quartile,size,0.13857616913362844
+Nursing,quartile,vol,0.055312939803054295
+Nursing,quartile,weekly,2.4278261634216562
+Nursing,quartile,trend,1.4504305126335795
+Nursing,decile,size,-0.6106808121674885
+Nursing,decile,vol,-0.06903906320152003
+Nursing,decile,weekly,7.594979447320487
+Nursing,decile,trend,2.0002098506791257
+Electricity,quartile,size,3.0029532173871183
+Electricity,quartile,vol,10.155676452593518
+Electricity,quartile,weekly,21.93087926320871
+Electricity,quartile,trend,8.929127467073442
+Electricity,decile,size,-1.7042550938470284
+Electricity,decile,vol,9.22105212060261
+Electricity,decile,weekly,20.324782799092397
+Electricity,decile,trend,13.041757239187739

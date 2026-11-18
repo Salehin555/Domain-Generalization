@@ -1,0 +1,36 @@
+panel,split,seed,manifest,method,n_train,n_test,mae_cat,mae_total,w_model,w_snaive,w_persistence,w_holt-winters
+Solar,Flat -> WorkWeek,0,A,Persistence (last value),0,10,0.10857415199279785,0.3117750287055969,,,,
+Solar,Flat -> WorkWeek,0,A,"Holt-Winters, additive weekly season",0,10,0.08850452303886414,0.2512096166610718,,,,
+Solar,Flat -> WorkWeek,0,A,"STL + ETS, damped trend",0,10,0.09713225066661835,0.27607473731040955,,,,
+Solar,Flat -> WorkWeek,0,A,"Theta, weekly deseasonalized",0,10,0.08832290023565292,0.253355473279953,,,,
+Solar,Flat -> WorkWeek,0,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,10,0.09026210010051727,0.2547101378440857,,,,
+Solar,Flat -> WorkWeek,0,A,"Combination: source model, seasonal naive, persistence",21,10,0.08415107329111918,0.23675491364729245,0.9,0.0,0.1,
+Solar,Flat -> WorkWeek,0,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",21,10,0.08236548571033424,0.23192782458219852,0.7,0.0,0.0,0.3
+Solar,Flat -> WorkWeek,1,A,Persistence (last value),0,10,0.11023640632629395,0.31547385454177856,,,,
+Solar,Flat -> WorkWeek,1,A,"Holt-Winters, additive weekly season",0,10,0.09081266075372696,0.2574246823787689,,,,
+Solar,Flat -> WorkWeek,1,A,"STL + ETS, damped trend",0,10,0.09972386807203293,0.2826854884624481,,,,
+Solar,Flat -> WorkWeek,1,A,"Theta, weekly deseasonalized",0,10,0.09010322391986847,0.25768038630485535,,,,
+Solar,Flat -> WorkWeek,1,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,10,0.09255041182041168,0.26089102029800415,,,,
+Solar,Flat -> WorkWeek,1,A,"Combination: source model, seasonal naive, persistence",21,10,0.08865300060084322,0.2486056434936026,0.8,0.0,0.2,
+Solar,Flat -> WorkWeek,1,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",21,10,0.08693395979075468,0.24364376363336393,0.7,0.0,0.1,0.2
+Solar,Flat -> WorkWeek,2,A,Persistence (last value),0,10,0.11057784408330917,0.3163833022117615,,,,
+Solar,Flat -> WorkWeek,2,A,"Holt-Winters, additive weekly season",0,10,0.09207504987716675,0.26160305738449097,,,,
+Solar,Flat -> WorkWeek,2,A,"STL + ETS, damped trend",0,10,0.09927325695753098,0.28238457441329956,,,,
+Solar,Flat -> WorkWeek,2,A,"Theta, weekly deseasonalized",0,10,0.09119434654712677,0.2610219419002533,,,,
+Solar,Flat -> WorkWeek,2,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,10,0.09327489137649536,0.26312917470932007,,,,
+Solar,Flat -> WorkWeek,2,A,"Combination: source model, seasonal naive, persistence",21,10,0.08542545733734593,0.23792673636853942,0.8,0.0,0.2,
+Solar,Flat -> WorkWeek,2,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",21,10,0.08444759180373732,0.2353979563787909,0.7,0.0,0.1,0.2
+Solar,Flat -> WorkWeek,3,A,Persistence (last value),0,10,0.11052802950143814,0.3183608651161194,,,,
+Solar,Flat -> WorkWeek,3,A,"Holt-Winters, additive weekly season",0,10,0.08966388553380966,0.2558022141456604,,,,
+Solar,Flat -> WorkWeek,3,A,"STL + ETS, damped trend",0,10,0.09997756034135818,0.28591132164001465,,,,
+Solar,Flat -> WorkWeek,3,A,"Theta, weekly deseasonalized",0,10,0.08979857712984085,0.258096307516098,,,,
+Solar,Flat -> WorkWeek,3,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,10,0.09149058163166046,0.25970903038978577,,,,
+Solar,Flat -> WorkWeek,3,A,"Combination: source model, seasonal naive, persistence",21,10,0.08397699091778749,0.23621152966317926,0.9,0.0,0.1,
+Solar,Flat -> WorkWeek,3,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",21,10,0.08272396803525285,0.23269757707591415,0.8,0.0,0.0,0.2
+Solar,Flat -> WorkWeek,4,A,Persistence (last value),0,10,0.10977736860513687,0.3137440085411072,,,,
+Solar,Flat -> WorkWeek,4,A,"Holt-Winters, additive weekly season",0,10,0.08987892419099808,0.2548457086086273,,,,
+Solar,Flat -> WorkWeek,4,A,"STL + ETS, damped trend",0,10,0.09866072237491608,0.27996736764907837,,,,
+Solar,Flat -> WorkWeek,4,A,"Theta, weekly deseasonalized",0,10,0.08934438228607178,0.25612109899520874,,,,
+Solar,Flat -> WorkWeek,4,A,"SARIMA(1,0,0)(0,1,1)7, fixed order",0,10,0.09116148203611374,0.25717490911483765,,,,
+Solar,Flat -> WorkWeek,4,A,"Combination: source model, seasonal naive, persistence",21,10,0.08311862844441668,0.23200364326488532,0.9,0.0,0.1,
+Solar,Flat -> WorkWeek,4,A,"Combination: source model, seasonal naive, persistence, Holt-Winters",21,10,0.08263885105652209,0.2311795948464519,0.8,0.0,0.0,0.2

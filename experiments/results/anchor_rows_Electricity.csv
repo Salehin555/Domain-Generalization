@@ -1,0 +1,391 @@
+panel,split,seed,manifest,method,n_train,n_test,mae_cat,mae_total,alpha
+Electricity,Flat -> WorkWeek,0,A,Target-trained reference (ERM-MLP),41,27,0.055625718,0.14689448,
+Electricity,Flat -> WorkWeek,0,A,ERM-MLP,41,27,0.05845173,0.15601899,
+Electricity,Flat -> WorkWeek,0,A,source error (s_te),41,27,0.028644137,0.07491507,
+Electricity,Flat -> WorkWeek,0,A,Seasonal naive,41,27,0.049005825,0.12860942,
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.1,41,27,0.056118626,0.14961605,0.1
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.25,41,27,0.053068664,0.14115986,0.25
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.4,41,27,0.050595395,0.13419797,0.4
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.5,41,27,0.049304172,0.1305523,0.5
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.6,41,27,0.04834144,0.12778111,0.6
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.75,41,27,0.047613565,0.12547594,0.75
+Electricity,Flat -> WorkWeek,0,A,Fixed blend a=0.9,41,27,0.047949698,0.12600796,0.9
+Electricity,Flat -> WorkWeek,0,A,"Blend, a chosen on source validation",41,27,0.04834144,0.12778111,0.6
+Electricity,Flat -> WorkWeek,0,A,ERM-DLinear,41,27,0.056648653,0.15019771,
+Electricity,Flat -> WorkWeek,0,A,Wave-Mask,41,27,0.059991863,0.15999278,
+Electricity,Flat -> WorkWeek,0,A,FixedBand,41,27,0.05775773,0.154755,
+Electricity,Flat -> WorkWeek,0,A,IRM,41,27,0.058370184,0.15581176,
+Electricity,Flat -> WorkWeek,0,A,CORAL,41,27,0.059200626,0.157606,
+Electricity,Flat -> WorkWeek,0,A,DANN,41,27,0.058657736,0.15627061,
+Electricity,Flat -> WorkWeek,0,A,GroupDRO,41,27,0.058192752,0.15534799,
+Electricity,Flat -> WorkWeek,0,A,Batch-softmax reweighting (former GroupDRO),41,27,0.06171754,0.16555433,
+Electricity,Flat -> WorkWeek,0,A,FADE gate only (static),41,27,0.058491606,0.15590163,
+Electricity,Flat -> WorkWeek,0,A,FADE gate only (input-conditioned),41,27,0.058495402,0.15591983,
+Electricity,Flat -> WorkWeek,0,A,FADE periodicity only,41,27,0.049240436,0.13027093,
+Electricity,Flat -> WorkWeek,0,A,FADE (gate + periodicity),41,27,0.049242496,0.13016143,
+Electricity,Flat -> WorkWeek,0,B,ERM-MLP,68,27,0.05719993,0.15247118,
+Electricity,Flat -> WorkWeek,0,B,source error (s_te),68,27,0.027837936,0.07254843,
+Electricity,Flat -> WorkWeek,0,B,"Blend, a chosen on source validation",68,27,0.048840094,0.12922943,0.5
+Electricity,Flat -> WorkWeek,0,B,ERM-DLinear,68,27,0.05554064,0.14701784,
+Electricity,Flat -> WorkWeek,0,B,Wave-Mask,68,27,0.059081793,0.15740745,
+Electricity,Flat -> WorkWeek,0,B,FixedBand,68,27,0.056422368,0.15084566,
+Electricity,Flat -> WorkWeek,0,B,IRM,68,27,0.057134256,0.15233119,
+Electricity,Flat -> WorkWeek,0,B,CORAL,68,27,0.05968361,0.1591296,
+Electricity,Flat -> WorkWeek,0,B,DANN,68,27,0.057521153,0.15315688,
+Electricity,Flat -> WorkWeek,0,B,GroupDRO,68,27,0.054336604,0.14451729,
+Electricity,Flat -> WorkWeek,0,B,Batch-softmax reweighting (former GroupDRO),68,27,0.06001788,0.16085224,
+Electricity,Flat -> WorkWeek,0,B,FADE gate only (static),68,27,0.057240732,0.15221383,
+Electricity,Flat -> WorkWeek,0,B,FADE gate only (input-conditioned),68,27,0.05724412,0.15221635,
+Electricity,Flat -> WorkWeek,0,B,FADE periodicity only,68,27,0.048008084,0.12676121,
+Electricity,Flat -> WorkWeek,0,B,FADE (gate + periodicity),68,27,0.047956172,0.12645434,
+Electricity,Flat -> WorkWeek,1,A,Target-trained reference (ERM-MLP),41,27,0.06230935,0.16560118,
+Electricity,Flat -> WorkWeek,1,A,ERM-MLP,41,27,0.06627668,0.17788999,
+Electricity,Flat -> WorkWeek,1,A,source error (s_te),41,27,0.03759326,0.102424435,
+Electricity,Flat -> WorkWeek,1,A,Seasonal naive,41,27,0.052978657,0.1398949,
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.1,41,27,0.063350044,0.16982324,0.1
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.25,41,27,0.059495393,0.15911153,0.25
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.4,41,27,0.05632836,0.15028754,0.4
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.5,41,27,0.05461764,0.14549202,0.5
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.6,41,27,0.05327736,0.1417024,0.6
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.75,41,27,0.052067585,0.13815802,0.75
+Electricity,Flat -> WorkWeek,1,A,Fixed blend a=0.9,41,27,0.0520323,0.13767157,0.9
+Electricity,Flat -> WorkWeek,1,A,"Blend, a chosen on source validation",41,27,0.0520323,0.13767157,0.9
+Electricity,Flat -> WorkWeek,1,A,ERM-DLinear,41,27,0.06510173,0.17397426,
+Electricity,Flat -> WorkWeek,1,A,Wave-Mask,41,27,0.07069996,0.19023228,
+Electricity,Flat -> WorkWeek,1,A,FixedBand,41,27,0.065481536,0.17638567,
+Electricity,Flat -> WorkWeek,1,A,IRM,41,27,0.06619483,0.17770319,
+Electricity,Flat -> WorkWeek,1,A,CORAL,41,27,0.066664286,0.17853782,
+Electricity,Flat -> WorkWeek,1,A,DANN,41,27,0.06655835,0.17865029,
+Electricity,Flat -> WorkWeek,1,A,GroupDRO,41,27,0.066672705,0.17907129,
+Electricity,Flat -> WorkWeek,1,A,Batch-softmax reweighting (former GroupDRO),41,27,0.07582306,0.20627676,
+Electricity,Flat -> WorkWeek,1,A,FADE gate only (static),41,27,0.06644695,0.1785118,
+Electricity,Flat -> WorkWeek,1,A,FADE gate only (input-conditioned),41,27,0.066490225,0.1786708,
+Electricity,Flat -> WorkWeek,1,A,FADE periodicity only,41,27,0.055233546,0.1473015,
+Electricity,Flat -> WorkWeek,1,A,FADE (gate + periodicity),41,27,0.05523655,0.14732824,
+Electricity,Flat -> WorkWeek,1,B,ERM-MLP,68,27,0.0607764,0.16180232,
+Electricity,Flat -> WorkWeek,1,B,source error (s_te),68,27,0.034567777,0.09356561,
+Electricity,Flat -> WorkWeek,1,B,"Blend, a chosen on source validation",68,27,0.05192425,0.13738768,0.9
+Electricity,Flat -> WorkWeek,1,B,ERM-DLinear,68,27,0.05999437,0.15909883,
+Electricity,Flat -> WorkWeek,1,B,Wave-Mask,68,27,0.06517348,0.17376941,
+Electricity,Flat -> WorkWeek,1,B,FixedBand,68,27,0.061519925,0.16432351,
+Electricity,Flat -> WorkWeek,1,B,IRM,68,27,0.060809333,0.16203481,
+Electricity,Flat -> WorkWeek,1,B,CORAL,68,27,0.062246684,0.16476506,
+Electricity,Flat -> WorkWeek,1,B,DANN,68,27,0.06142761,0.16375555,
+Electricity,Flat -> WorkWeek,1,B,GroupDRO,68,27,0.06151745,0.16433775,
+Electricity,Flat -> WorkWeek,1,B,Batch-softmax reweighting (former GroupDRO),68,27,0.0682177,0.18348595,
+Electricity,Flat -> WorkWeek,1,B,FADE gate only (static),68,27,0.06090742,0.16240293,
+Electricity,Flat -> WorkWeek,1,B,FADE gate only (input-conditioned),68,27,0.060834218,0.16219836,
+Electricity,Flat -> WorkWeek,1,B,FADE periodicity only,68,27,0.05214501,0.1385538,
+Electricity,Flat -> WorkWeek,1,B,FADE (gate + periodicity),68,27,0.052011166,0.13825227,
+Electricity,Flat -> WorkWeek,2,A,Target-trained reference (ERM-MLP),41,27,0.040693823,0.10692458,
+Electricity,Flat -> WorkWeek,2,A,ERM-MLP,41,27,0.046258885,0.12388888,
+Electricity,Flat -> WorkWeek,2,A,source error (s_te),41,27,0.042981885,0.10920383,
+Electricity,Flat -> WorkWeek,2,A,Seasonal naive,41,27,0.03621955,0.09448505,
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.1,41,27,0.044003602,0.117691755,0.1
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.25,41,27,0.041010793,0.10934633,0.25
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.4,41,27,0.03855748,0.10239059,0.4
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.5,41,27,0.037248757,0.0986028,0.5
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.6,41,27,0.03624378,0.09560723,0.6
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.75,41,27,0.03538286,0.09285631,0.75
+Electricity,Flat -> WorkWeek,2,A,Fixed blend a=0.9,41,27,0.03544707,0.09266127,0.9
+Electricity,Flat -> WorkWeek,2,A,"Blend, a chosen on source validation",41,27,0.037248757,0.0986028,0.5
+Electricity,Flat -> WorkWeek,2,A,ERM-DLinear,41,27,0.046999916,0.12655021,
+Electricity,Flat -> WorkWeek,2,A,Wave-Mask,41,27,0.049037572,0.13154222,
+Electricity,Flat -> WorkWeek,2,A,FixedBand,41,27,0.046491925,0.12543671,
+Electricity,Flat -> WorkWeek,2,A,IRM,41,27,0.046362016,0.12423974,
+Electricity,Flat -> WorkWeek,2,A,CORAL,41,27,0.0467243,0.12498791,
+Electricity,Flat -> WorkWeek,2,A,DANN,41,27,0.04614377,0.12343955,
+Electricity,Flat -> WorkWeek,2,A,GroupDRO,41,27,0.046431288,0.12449135,
+Electricity,Flat -> WorkWeek,2,A,Batch-softmax reweighting (former GroupDRO),41,27,0.054076057,0.14690417,
+Electricity,Flat -> WorkWeek,2,A,FADE gate only (static),41,27,0.046245202,0.123629875,
+Electricity,Flat -> WorkWeek,2,A,FADE gate only (input-conditioned),41,27,0.04624331,0.123606615,
+Electricity,Flat -> WorkWeek,2,A,FADE periodicity only,41,27,0.03902701,0.103808396,
+Electricity,Flat -> WorkWeek,2,A,FADE (gate + periodicity),41,27,0.03903053,0.10362553,
+Electricity,Flat -> WorkWeek,2,B,ERM-MLP,68,27,0.042021636,0.11196572,
+Electricity,Flat -> WorkWeek,2,B,source error (s_te),68,27,0.039383262,0.100628555,
+Electricity,Flat -> WorkWeek,2,B,"Blend, a chosen on source validation",68,27,0.036499593,0.09658313,0.4
+Electricity,Flat -> WorkWeek,2,B,ERM-DLinear,68,27,0.041619506,0.11112329,
+Electricity,Flat -> WorkWeek,2,B,Wave-Mask,68,27,0.043099735,0.11384441,
+Electricity,Flat -> WorkWeek,2,B,FixedBand,68,27,0.043571543,0.11706564,
+Electricity,Flat -> WorkWeek,2,B,IRM,68,27,0.042193037,0.112558015,
+Electricity,Flat -> WorkWeek,2,B,CORAL,68,27,0.04397211,0.11695625,
+Electricity,Flat -> WorkWeek,2,B,DANN,68,27,0.04221596,0.11226347,
+Electricity,Flat -> WorkWeek,2,B,GroupDRO,68,27,0.041034024,0.109189026,
+Electricity,Flat -> WorkWeek,2,B,Batch-softmax reweighting (former GroupDRO),68,27,0.04575704,0.123012334,
+Electricity,Flat -> WorkWeek,2,B,FADE gate only (static),68,27,0.04197619,0.11144263,
+Electricity,Flat -> WorkWeek,2,B,FADE gate only (input-conditioned),68,27,0.041922525,0.111272424,
+Electricity,Flat -> WorkWeek,2,B,FADE periodicity only,68,27,0.03544121,0.09354125,
+Electricity,Flat -> WorkWeek,2,B,FADE (gate + periodicity),68,27,0.035533294,0.09370235,
+Electricity,Flat -> WorkWeek,3,A,Target-trained reference (ERM-MLP),41,27,0.059537932,0.1548915,
+Electricity,Flat -> WorkWeek,3,A,ERM-MLP,41,27,0.06401224,0.16993946,
+Electricity,Flat -> WorkWeek,3,A,source error (s_te),41,27,0.034210686,0.091615014,
+Electricity,Flat -> WorkWeek,3,A,Seasonal naive,41,27,0.051575676,0.13675721,
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.1,41,27,0.061179146,0.16237429,0.1
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.25,41,27,0.05744099,0.15238915,0.25
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.4,41,27,0.054372042,0.14414443,0.4
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.5,41,27,0.052740544,0.13983782,0.5
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.6,41,27,0.051485833,0.13653666,0.6
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.75,41,27,0.05039653,0.13373028,0.75
+Electricity,Flat -> WorkWeek,3,A,Fixed blend a=0.9,41,27,0.050525293,0.13400649,0.9
+Electricity,Flat -> WorkWeek,3,A,"Blend, a chosen on source validation",41,27,0.054372042,0.14414443,0.4
+Electricity,Flat -> WorkWeek,3,A,ERM-DLinear,41,27,0.06683877,0.17806923,
+Electricity,Flat -> WorkWeek,3,A,Wave-Mask,41,27,0.06621267,0.17578965,
+Electricity,Flat -> WorkWeek,3,A,FixedBand,41,27,0.06367418,0.16961548,
+Electricity,Flat -> WorkWeek,3,A,IRM,41,27,0.06393252,0.16978894,
+Electricity,Flat -> WorkWeek,3,A,CORAL,41,27,0.06489247,0.17229223,
+Electricity,Flat -> WorkWeek,3,A,DANN,41,27,0.064331524,0.17073584,
+Electricity,Flat -> WorkWeek,3,A,GroupDRO,41,27,0.06360349,0.16899665,
+Electricity,Flat -> WorkWeek,3,A,Batch-softmax reweighting (former GroupDRO),41,27,0.07039358,0.18881994,
+Electricity,Flat -> WorkWeek,3,A,FADE gate only (static),41,27,0.064099565,0.17000984,
+Electricity,Flat -> WorkWeek,3,A,FADE gate only (input-conditioned),41,27,0.064164706,0.17021646,
+Electricity,Flat -> WorkWeek,3,A,FADE periodicity only,41,27,0.054013982,0.14327523,
+Electricity,Flat -> WorkWeek,3,A,FADE (gate + periodicity),41,27,0.054104835,0.14337352,
+Electricity,Flat -> WorkWeek,3,B,ERM-MLP,68,27,0.06077576,0.16089185,
+Electricity,Flat -> WorkWeek,3,B,source error (s_te),68,27,0.031989347,0.08525928,
+Electricity,Flat -> WorkWeek,3,B,"Blend, a chosen on source validation",68,27,0.05287477,0.14007752,0.4
+Electricity,Flat -> WorkWeek,3,B,ERM-DLinear,68,27,0.062495165,0.16575429,
+Electricity,Flat -> WorkWeek,3,B,Wave-Mask,68,27,0.06260097,0.16529058,
+Electricity,Flat -> WorkWeek,3,B,FixedBand,68,27,0.061084386,0.16226359,
+Electricity,Flat -> WorkWeek,3,B,IRM,68,27,0.060685042,0.16072609,
+Electricity,Flat -> WorkWeek,3,B,CORAL,68,27,0.062497586,0.16548973,
+Electricity,Flat -> WorkWeek,3,B,DANN,68,27,0.06106697,0.16153526,
+Electricity,Flat -> WorkWeek,3,B,GroupDRO,68,27,0.058681455,0.1552322,
+Electricity,Flat -> WorkWeek,3,B,Batch-softmax reweighting (former GroupDRO),68,27,0.06452638,0.17204913,
+Electricity,Flat -> WorkWeek,3,B,FADE gate only (static),68,27,0.06076016,0.16052105,
+Electricity,Flat -> WorkWeek,3,B,FADE gate only (input-conditioned),68,27,0.06078678,0.16059259,
+Electricity,Flat -> WorkWeek,3,B,FADE periodicity only,68,27,0.05150735,0.13661788,
+Electricity,Flat -> WorkWeek,3,B,FADE (gate + periodicity),68,27,0.05198335,0.13781577,
+Electricity,Flat -> WorkWeek,4,A,Target-trained reference (ERM-MLP),41,27,0.051524837,0.12973598,
+Electricity,Flat -> WorkWeek,4,A,ERM-MLP,41,27,0.054565556,0.13987091,
+Electricity,Flat -> WorkWeek,4,A,source error (s_te),41,27,0.039519295,0.10340745,
+Electricity,Flat -> WorkWeek,4,A,Seasonal naive,41,27,0.04451174,0.11561872,
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.1,41,27,0.052245952,0.13406456,0.1
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.25,41,27,0.049188353,0.12651478,0.25
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.4,41,27,0.046692386,0.120470315,0.4
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.5,41,27,0.045373924,0.11726078,0.5
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.6,41,27,0.04436381,0.11484437,0.6
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.75,41,27,0.0434939,0.112960435,0.75
+Electricity,Flat -> WorkWeek,4,A,Fixed blend a=0.9,41,27,0.043621633,0.1134014,0.9
+Electricity,Flat -> WorkWeek,4,A,"Blend, a chosen on source validation",41,27,0.043621633,0.1134014,0.9
+Electricity,Flat -> WorkWeek,4,A,ERM-DLinear,41,27,0.055306025,0.1424967,
+Electricity,Flat -> WorkWeek,4,A,Wave-Mask,41,27,0.057483323,0.14786424,
+Electricity,Flat -> WorkWeek,4,A,FixedBand,41,27,0.055434152,0.14308406,
+Electricity,Flat -> WorkWeek,4,A,IRM,41,27,0.054548316,0.13987201,
+Electricity,Flat -> WorkWeek,4,A,CORAL,41,27,0.055004492,0.14131679,
+Electricity,Flat -> WorkWeek,4,A,DANN,41,27,0.054708805,0.14030653,
+Electricity,Flat -> WorkWeek,4,A,GroupDRO,41,27,0.054853745,0.14076795,
+Electricity,Flat -> WorkWeek,4,A,Batch-softmax reweighting (former GroupDRO),41,27,0.0555121,0.14245708,
+Electricity,Flat -> WorkWeek,4,A,FADE gate only (static),41,27,0.05455857,0.13976717,
+Electricity,Flat -> WorkWeek,4,A,FADE gate only (input-conditioned),41,27,0.054560043,0.13976714,
+Electricity,Flat -> WorkWeek,4,A,FADE periodicity only,41,27,0.047619957,0.12282773,
+Electricity,Flat -> WorkWeek,4,A,FADE (gate + periodicity),41,27,0.047568604,0.12257319,
+Electricity,Flat -> WorkWeek,4,B,ERM-MLP,68,27,0.052130207,0.13291837,
+Electricity,Flat -> WorkWeek,4,B,source error (s_te),68,27,0.03771014,0.09809925,
+Electricity,Flat -> WorkWeek,4,B,"Blend, a chosen on source validation",68,27,0.043580994,0.11330072,0.9
+Electricity,Flat -> WorkWeek,4,B,ERM-DLinear,68,27,0.052951578,0.13553871,
+Electricity,Flat -> WorkWeek,4,B,Wave-Mask,68,27,0.054255094,0.13825591,
+Electricity,Flat -> WorkWeek,4,B,FixedBand,68,27,0.05314472,0.13665497,
+Electricity,Flat -> WorkWeek,4,B,IRM,68,27,0.05213263,0.13306026,
+Electricity,Flat -> WorkWeek,4,B,CORAL,68,27,0.053472646,0.13691503,
+Electricity,Flat -> WorkWeek,4,B,DANN,68,27,0.05242253,0.1338528,
+Electricity,Flat -> WorkWeek,4,B,GroupDRO,68,27,0.05087313,0.12981047,
+Electricity,Flat -> WorkWeek,4,B,Batch-softmax reweighting (former GroupDRO),68,27,0.055769343,0.14299448,
+Electricity,Flat -> WorkWeek,4,B,FADE gate only (static),68,27,0.052037068,0.13251306,
+Electricity,Flat -> WorkWeek,4,B,FADE gate only (input-conditioned),68,27,0.052019253,0.13246682,
+Electricity,Flat -> WorkWeek,4,B,FADE periodicity only,68,27,0.044319008,0.11459537,
+Electricity,Flat -> WorkWeek,4,B,FADE (gate + periodicity),68,27,0.044244293,0.11426345,
+Electricity,WorkWeek -> Flat,0,A,Target-trained reference (ERM-MLP),41,27,0.041338295,0.106223725,
+Electricity,WorkWeek -> Flat,0,A,ERM-MLP,41,27,0.038621597,0.09787062,
+Electricity,WorkWeek -> Flat,0,A,source error (s_te),41,27,0.050332952,0.12877868,
+Electricity,WorkWeek -> Flat,0,A,Seasonal naive,41,27,0.03379294,0.08863217,
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.1,41,27,0.037236925,0.09448593,0.1
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.25,41,27,0.03551838,0.09031364,0.25
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.4,41,27,0.03421238,0.087278925,0.4
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.5,41,27,0.033585254,0.08594661,0.5
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.6,41,27,0.033163767,0.08517415,0.6
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.75,41,27,0.032915685,0.0851119,0.75
+Electricity,WorkWeek -> Flat,0,A,Fixed blend a=0.9,41,27,0.033223227,0.08657565,0.9
+Electricity,WorkWeek -> Flat,0,A,"Blend, a chosen on source validation",41,27,0.032915685,0.0851119,0.75
+Electricity,WorkWeek -> Flat,0,A,ERM-DLinear,41,27,0.038652558,0.097052425,
+Electricity,WorkWeek -> Flat,0,A,Wave-Mask,41,27,0.04011678,0.102340564,
+Electricity,WorkWeek -> Flat,0,A,FixedBand,41,27,0.038359243,0.09733376,
+Electricity,WorkWeek -> Flat,0,A,IRM,41,27,0.038623087,0.097918145,
+Electricity,WorkWeek -> Flat,0,A,CORAL,41,27,0.03910168,0.09895769,
+Electricity,WorkWeek -> Flat,0,A,DANN,41,27,0.038744014,0.098170765,
+Electricity,WorkWeek -> Flat,0,A,GroupDRO,41,27,0.039358925,0.1000162,
+Electricity,WorkWeek -> Flat,0,A,Batch-softmax reweighting (former GroupDRO),41,27,0.042169835,0.108831055,
+Electricity,WorkWeek -> Flat,0,A,FADE gate only (static),41,27,0.03881827,0.09827767,
+Electricity,WorkWeek -> Flat,0,A,FADE gate only (input-conditioned),41,27,0.03882306,0.09832888,
+Electricity,WorkWeek -> Flat,0,A,FADE periodicity only,41,27,0.032953497,0.084627815,
+Electricity,WorkWeek -> Flat,0,A,FADE (gate + periodicity),41,27,0.033087645,0.08498713,
+Electricity,WorkWeek -> Flat,0,B,ERM-MLP,68,27,0.036339946,0.09193346,
+Electricity,WorkWeek -> Flat,0,B,source error (s_te),68,27,0.046156574,0.11778621,
+Electricity,WorkWeek -> Flat,0,B,"Blend, a chosen on source validation",68,27,0.03262281,0.08446307,0.75
+Electricity,WorkWeek -> Flat,0,B,ERM-DLinear,68,27,0.036658928,0.092457764,
+Electricity,WorkWeek -> Flat,0,B,Wave-Mask,68,27,0.03783174,0.09627079,
+Electricity,WorkWeek -> Flat,0,B,FixedBand,68,27,0.036957137,0.09312142,
+Electricity,WorkWeek -> Flat,0,B,IRM,68,27,0.03630874,0.09190407,
+Electricity,WorkWeek -> Flat,0,B,CORAL,68,27,0.03759651,0.09475606,
+Electricity,WorkWeek -> Flat,0,B,DANN,68,27,0.03661739,0.09240318,
+Electricity,WorkWeek -> Flat,0,B,GroupDRO,68,27,0.036486555,0.09214517,
+Electricity,WorkWeek -> Flat,0,B,Batch-softmax reweighting (former GroupDRO),68,27,0.038773473,0.098906815,
+Electricity,WorkWeek -> Flat,0,B,FADE gate only (static),68,27,0.036556296,0.09234885,
+Electricity,WorkWeek -> Flat,0,B,FADE gate only (input-conditioned),68,27,0.036558036,0.092412174,
+Electricity,WorkWeek -> Flat,0,B,FADE periodicity only,68,27,0.032044116,0.08304428,
+Electricity,WorkWeek -> Flat,0,B,FADE (gate + periodicity),68,27,0.032226913,0.08350078,
+Electricity,WorkWeek -> Flat,1,A,Target-trained reference (ERM-MLP),41,27,0.03200814,0.08215693,
+Electricity,WorkWeek -> Flat,1,A,ERM-MLP,41,27,0.032276534,0.0828576,
+Electricity,WorkWeek -> Flat,1,A,source error (s_te),41,27,0.05856427,0.1519168,
+Electricity,WorkWeek -> Flat,1,A,Seasonal naive,41,27,0.02998629,0.077804625,
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.1,41,27,0.031256303,0.08036437,0.1
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.25,41,27,0.030048462,0.07748597,0.25
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.4,41,27,0.029232789,0.07554437,0.4
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.5,41,27,0.028902551,0.074763194,0.5
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.6,41,27,0.028744543,0.07441616,0.6
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.75,41,27,0.028835844,0.07471806,0.75
+Electricity,WorkWeek -> Flat,1,A,Fixed blend a=0.9,41,27,0.029360913,0.07611007,0.9
+Electricity,WorkWeek -> Flat,1,A,"Blend, a chosen on source validation",41,27,0.028835844,0.07471806,0.75
+Electricity,WorkWeek -> Flat,1,A,ERM-DLinear,41,27,0.031691402,0.08113665,
+Electricity,WorkWeek -> Flat,1,A,Wave-Mask,41,27,0.033452794,0.08648076,
+Electricity,WorkWeek -> Flat,1,A,FixedBand,41,27,0.031736765,0.08200187,
+Electricity,WorkWeek -> Flat,1,A,IRM,41,27,0.032211218,0.08265242,
+Electricity,WorkWeek -> Flat,1,A,CORAL,41,27,0.032384496,0.082692005,
+Electricity,WorkWeek -> Flat,1,A,DANN,41,27,0.032297723,0.08278796,
+Electricity,WorkWeek -> Flat,1,A,GroupDRO,41,27,0.032775063,0.084301,
+Electricity,WorkWeek -> Flat,1,A,Batch-softmax reweighting (former GroupDRO),41,27,0.03418799,0.08843681,
+Electricity,WorkWeek -> Flat,1,A,FADE gate only (static),41,27,0.032389928,0.08303725,
+Electricity,WorkWeek -> Flat,1,A,FADE gate only (input-conditioned),41,27,0.032430798,0.0831916,
+Electricity,WorkWeek -> Flat,1,A,FADE periodicity only,41,27,0.029349599,0.07597846,
+Electricity,WorkWeek -> Flat,1,A,FADE (gate + periodicity),41,27,0.029729638,0.07708474,
+Electricity,WorkWeek -> Flat,1,B,ERM-MLP,68,27,0.0306004,0.07841841,
+Electricity,WorkWeek -> Flat,1,B,source error (s_te),68,27,0.054548293,0.14157265,
+Electricity,WorkWeek -> Flat,1,B,"Blend, a chosen on source validation",68,27,0.02865485,0.07423273,0.75
+Electricity,WorkWeek -> Flat,1,B,ERM-DLinear,68,27,0.03048901,0.07812821,
+Electricity,WorkWeek -> Flat,1,B,Wave-Mask,68,27,0.03225148,0.08353049,
+Electricity,WorkWeek -> Flat,1,B,FixedBand,68,27,0.030472293,0.0785235,
+Electricity,WorkWeek -> Flat,1,B,IRM,68,27,0.030540189,0.078255214,
+Electricity,WorkWeek -> Flat,1,B,CORAL,68,27,0.031020429,0.07869663,
+Electricity,WorkWeek -> Flat,1,B,DANN,68,27,0.03056574,0.07823424,
+Electricity,WorkWeek -> Flat,1,B,GroupDRO,68,27,0.030513082,0.078203745,
+Electricity,WorkWeek -> Flat,1,B,Batch-softmax reweighting (former GroupDRO),68,27,0.031565163,0.08125351,
+Electricity,WorkWeek -> Flat,1,B,FADE gate only (static),68,27,0.030645518,0.07859608,
+Electricity,WorkWeek -> Flat,1,B,FADE gate only (input-conditioned),68,27,0.030697823,0.07879895,
+Electricity,WorkWeek -> Flat,1,B,FADE periodicity only,68,27,0.02865621,0.07420596,
+Electricity,WorkWeek -> Flat,1,B,FADE (gate + periodicity),68,27,0.029142234,0.07568589,
+Electricity,WorkWeek -> Flat,2,A,Target-trained reference (ERM-MLP),41,27,0.038578507,0.09636303,
+Electricity,WorkWeek -> Flat,2,A,ERM-MLP,41,27,0.037011288,0.09260149,
+Electricity,WorkWeek -> Flat,2,A,source error (s_te),41,27,0.056902807,0.14888191,
+Electricity,WorkWeek -> Flat,2,A,Seasonal naive,41,27,0.032541927,0.084909916,
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.1,41,27,0.035635978,0.089387804,0.1
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.25,41,27,0.0339882,0.08555241,0.25
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.4,41,27,0.03276648,0.08278098,0.4
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.5,41,27,0.032177318,0.081570774,0.5
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.6,41,27,0.031779774,0.080916375,0.6
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.75,41,27,0.031581756,0.0810302,0.75
+Electricity,WorkWeek -> Flat,2,A,Fixed blend a=0.9,41,27,0.031943187,0.08269543,0.9
+Electricity,WorkWeek -> Flat,2,A,"Blend, a chosen on source validation",41,27,0.031779774,0.080916375,0.6
+Electricity,WorkWeek -> Flat,2,A,ERM-DLinear,41,27,0.03686226,0.091582015,
+Electricity,WorkWeek -> Flat,2,A,Wave-Mask,41,27,0.038302753,0.09618473,
+Electricity,WorkWeek -> Flat,2,A,FixedBand,41,27,0.03726038,0.09318012,
+Electricity,WorkWeek -> Flat,2,A,IRM,41,27,0.03699496,0.092561096,
+Electricity,WorkWeek -> Flat,2,A,CORAL,41,27,0.037183136,0.09267639,
+Electricity,WorkWeek -> Flat,2,A,DANN,41,27,0.037090708,0.09266545,
+Electricity,WorkWeek -> Flat,2,A,GroupDRO,41,27,0.037491303,0.09375828,
+Electricity,WorkWeek -> Flat,2,A,Batch-softmax reweighting (former GroupDRO),41,27,0.038096745,0.09570828,
+Electricity,WorkWeek -> Flat,2,A,FADE gate only (static),41,27,0.037176475,0.09291113,
+Electricity,WorkWeek -> Flat,2,A,FADE gate only (input-conditioned),41,27,0.037192278,0.09297255,
+Electricity,WorkWeek -> Flat,2,A,FADE periodicity only,41,27,0.031693503,0.080647714,
+Electricity,WorkWeek -> Flat,2,A,FADE (gate + periodicity),41,27,0.031953152,0.08135185,
+Electricity,WorkWeek -> Flat,2,B,ERM-MLP,68,27,0.035274114,0.08808902,
+Electricity,WorkWeek -> Flat,2,B,source error (s_te),68,27,0.052584767,0.13677253,
+Electricity,WorkWeek -> Flat,2,B,"Blend, a chosen on source validation",68,27,0.03160352,0.08017456,0.5
+Electricity,WorkWeek -> Flat,2,B,ERM-DLinear,68,27,0.03544362,0.08808412,
+Electricity,WorkWeek -> Flat,2,B,Wave-Mask,68,27,0.036805853,0.09221203,
+Electricity,WorkWeek -> Flat,2,B,FixedBand,68,27,0.036039643,0.090131916,
+Electricity,WorkWeek -> Flat,2,B,IRM,68,27,0.035269026,0.0881015,
+Electricity,WorkWeek -> Flat,2,B,CORAL,68,27,0.0355308,0.08837276,
+Electricity,WorkWeek -> Flat,2,B,DANN,68,27,0.035357013,0.08818644,
+Electricity,WorkWeek -> Flat,2,B,GroupDRO,68,27,0.035267595,0.08800935,
+Electricity,WorkWeek -> Flat,2,B,Batch-softmax reweighting (former GroupDRO),68,27,0.036924485,0.09249877,
+Electricity,WorkWeek -> Flat,2,B,FADE gate only (static),68,27,0.035494667,0.08858756,
+Electricity,WorkWeek -> Flat,2,B,FADE gate only (input-conditioned),68,27,0.035541806,0.08878177,
+Electricity,WorkWeek -> Flat,2,B,FADE periodicity only,68,27,0.030931817,0.07913769,
+Electricity,WorkWeek -> Flat,2,B,FADE (gate + periodicity),68,27,0.031376846,0.08020094,
+Electricity,WorkWeek -> Flat,3,A,Target-trained reference (ERM-MLP),41,27,0.036509115,0.0940653,
+Electricity,WorkWeek -> Flat,3,A,ERM-MLP,41,27,0.036718518,0.09451459,
+Electricity,WorkWeek -> Flat,3,A,source error (s_te),41,27,0.046583336,0.12293754,
+Electricity,WorkWeek -> Flat,3,A,Seasonal naive,41,27,0.03254756,0.08726214,
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.1,41,27,0.035494957,0.09169136,0.1
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.25,41,27,0.033985753,0.08820833,0.25
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.4,41,27,0.032845087,0.08572334,0.4
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.5,41,27,0.032298617,0.08464661,0.5
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.6,41,27,0.03192313,0.084043786,0.6
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.75,41,27,0.031718545,0.084040694,0.75
+Electricity,WorkWeek -> Flat,3,A,Fixed blend a=0.9,41,27,0.03200606,0.08537531,0.9
+Electricity,WorkWeek -> Flat,3,A,"Blend, a chosen on source validation",41,27,0.03192313,0.084043786,0.6
+Electricity,WorkWeek -> Flat,3,A,ERM-DLinear,41,27,0.037492365,0.09663213,
+Electricity,WorkWeek -> Flat,3,A,Wave-Mask,41,27,0.03806763,0.098783426,
+Electricity,WorkWeek -> Flat,3,A,FixedBand,41,27,0.036648378,0.09560505,
+Electricity,WorkWeek -> Flat,3,A,IRM,41,27,0.036652595,0.09432378,
+Electricity,WorkWeek -> Flat,3,A,CORAL,41,27,0.037180424,0.09592083,
+Electricity,WorkWeek -> Flat,3,A,DANN,41,27,0.03688152,0.09490173,
+Electricity,WorkWeek -> Flat,3,A,GroupDRO,41,27,0.03700451,0.09527139,
+Electricity,WorkWeek -> Flat,3,A,Batch-softmax reweighting (former GroupDRO),41,27,0.0397367,0.10371407,
+Electricity,WorkWeek -> Flat,3,A,FADE gate only (static),41,27,0.03692896,0.094978474,
+Electricity,WorkWeek -> Flat,3,A,FADE gate only (input-conditioned),41,27,0.03695321,0.09504606,
+Electricity,WorkWeek -> Flat,3,A,FADE periodicity only,41,27,0.031972334,0.084156126,
+Electricity,WorkWeek -> Flat,3,A,FADE (gate + periodicity),41,27,0.032197013,0.084745966,
+Electricity,WorkWeek -> Flat,3,B,ERM-MLP,68,27,0.0349187,0.08976994,
+Electricity,WorkWeek -> Flat,3,B,source error (s_te),68,27,0.043139555,0.113025725,
+Electricity,WorkWeek -> Flat,3,B,"Blend, a chosen on source validation",68,27,0.03150896,0.08307241,0.6
+Electricity,WorkWeek -> Flat,3,B,ERM-DLinear,68,27,0.035433076,0.09116472,
+Electricity,WorkWeek -> Flat,3,B,Wave-Mask,68,27,0.036376134,0.09408123,
+Electricity,WorkWeek -> Flat,3,B,FixedBand,68,27,0.03502855,0.09091517,
+Electricity,WorkWeek -> Flat,3,B,IRM,68,27,0.034849636,0.08960306,
+Electricity,WorkWeek -> Flat,3,B,CORAL,68,27,0.035598584,0.09149557,
+Electricity,WorkWeek -> Flat,3,B,DANN,68,27,0.034971848,0.089906506,
+Electricity,WorkWeek -> Flat,3,B,GroupDRO,68,27,0.03500791,0.08995742,
+Electricity,WorkWeek -> Flat,3,B,Batch-softmax reweighting (former GroupDRO),68,27,0.036680818,0.09478576,
+Electricity,WorkWeek -> Flat,3,B,FADE gate only (static),68,27,0.035179425,0.09040915,
+Electricity,WorkWeek -> Flat,3,B,FADE gate only (input-conditioned),68,27,0.035212044,0.09053059,
+Electricity,WorkWeek -> Flat,3,B,FADE periodicity only,68,27,0.030971762,0.08210479,
+Electricity,WorkWeek -> Flat,3,B,FADE (gate + periodicity),68,27,0.031314813,0.08307305,
+Electricity,WorkWeek -> Flat,4,A,Target-trained reference (ERM-MLP),41,27,0.04482395,0.11521182,
+Electricity,WorkWeek -> Flat,4,A,ERM-MLP,41,27,0.043981455,0.11363715,
+Electricity,WorkWeek -> Flat,4,A,source error (s_te),41,27,0.055941667,0.1508177,
+Electricity,WorkWeek -> Flat,4,A,Seasonal naive,41,27,0.03922607,0.10418506,
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.1,41,27,0.042527802,0.110098965,0.1
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.25,41,27,0.040759414,0.105812594,0.25
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.4,41,27,0.039458852,0.10267128,0.4
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.5,41,27,0.0388439,0.101271264,0.5
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.6,41,27,0.0384378,0.10051051,0.6
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.75,41,27,0.038258646,0.100556865,0.75
+Electricity,WorkWeek -> Flat,4,A,Fixed blend a=0.9,41,27,0.038623024,0.10205212,0.9
+Electricity,WorkWeek -> Flat,4,A,"Blend, a chosen on source validation",41,27,0.038258646,0.100556865,0.75
+Electricity,WorkWeek -> Flat,4,A,ERM-DLinear,41,27,0.04440083,0.1140905,
+Electricity,WorkWeek -> Flat,4,A,Wave-Mask,41,27,0.045642227,0.11839138,
+Electricity,WorkWeek -> Flat,4,A,FixedBand,41,27,0.044169206,0.11471868,
+Electricity,WorkWeek -> Flat,4,A,IRM,41,27,0.04392272,0.113501504,
+Electricity,WorkWeek -> Flat,4,A,CORAL,41,27,0.04393363,0.113282114,
+Electricity,WorkWeek -> Flat,4,A,DANN,41,27,0.043992236,0.113580704,
+Electricity,WorkWeek -> Flat,4,A,GroupDRO,41,27,0.04447383,0.11484146,
+Electricity,WorkWeek -> Flat,4,A,Batch-softmax reweighting (former GroupDRO),41,27,0.045115467,0.117064066,
+Electricity,WorkWeek -> Flat,4,A,FADE gate only (static),41,27,0.04421669,0.11425727,
+Electricity,WorkWeek -> Flat,4,A,FADE gate only (input-conditioned),41,27,0.044289183,0.11447889,
+Electricity,WorkWeek -> Flat,4,A,FADE periodicity only,41,27,0.03860848,0.1009745,
+Electricity,WorkWeek -> Flat,4,A,FADE (gate + periodicity),41,27,0.039034035,0.10222907,
+Electricity,WorkWeek -> Flat,4,B,ERM-MLP,68,27,0.041967172,0.10816351,
+Electricity,WorkWeek -> Flat,4,B,source error (s_te),68,27,0.053322896,0.1433006,
+Electricity,WorkWeek -> Flat,4,B,"Blend, a chosen on source validation",68,27,0.038010214,0.09947115,0.6
+Electricity,WorkWeek -> Flat,4,B,ERM-DLinear,68,27,0.04226763,0.108477965,
+Electricity,WorkWeek -> Flat,4,B,Wave-Mask,68,27,0.043609805,0.11259776,
+Electricity,WorkWeek -> Flat,4,B,FixedBand,68,27,0.04260891,0.11019321,
+Electricity,WorkWeek -> Flat,4,B,IRM,68,27,0.041915447,0.10803868,
+Electricity,WorkWeek -> Flat,4,B,CORAL,68,27,0.042102147,0.10766986,
+Electricity,WorkWeek -> Flat,4,B,DANN,68,27,0.041884515,0.10785489,
+Electricity,WorkWeek -> Flat,4,B,GroupDRO,68,27,0.041789062,0.10771285,
+Electricity,WorkWeek -> Flat,4,B,Batch-softmax reweighting (former GroupDRO),68,27,0.044023104,0.113771856,
+Electricity,WorkWeek -> Flat,4,B,FADE gate only (static),68,27,0.042179387,0.10869941,
+Electricity,WorkWeek -> Flat,4,B,FADE gate only (input-conditioned),68,27,0.042248506,0.108908765,
+Electricity,WorkWeek -> Flat,4,B,FADE periodicity only,68,27,0.037518855,0.0985301,
+Electricity,WorkWeek -> Flat,4,B,FADE (gate + periodicity),68,27,0.03804118,0.09992271,

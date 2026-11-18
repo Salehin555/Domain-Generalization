@@ -1,0 +1,1163 @@
+"""Single source of every reported number.
+
+Reads ONLY experiments/results/ and writes
+    Manuscript/generated/numbers.tex    \\newcommand macros used in the text
+    Manuscript/generated/tab_*.tex      every data table of main text and supplement
+    Manuscript/generated/MANIFEST.txt   which result file produced which output
+
+Nothing in the manuscript that is a measured value is typed by hand; running
+this script after any new experiment updates the main text, the supplement and the
+highlights together.
+
+Primary endpoint mae_cat (category-averaged MAE); macros ending in T are the
+secondary total-staffing endpoint.
+"""
+import glob
+import json
+import os
+import re
+
+import numpy as np
+import pandas as pd
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+RES = os.path.join(HERE, "results")
+# MN_GEN redirects the output to another folder
+GEN = os.environ.get("MN_GEN") or os.path.join(os.path.dirname(HERE), "Manuscript", "generated")
+os.makedirs(GEN, exist_ok=True)
+MAC, MANI = [], []
+SEEN = {}
+PAN = ["Nursing", "Traffic", "Solar", "Electricity"]
+LABEL = {"ERM-MLP": "ERM-Stem",
+         "Target-trained reference (ERM-MLP)": "Target-trained reference (headroom)",
+         "Blend, a chosen on source validation": "Blend, $\\alpha$ from source validation",
+         "Batch-softmax reweighting (former GroupDRO)": "Batch-softmax reweighting"}
+AB = {"Nursing": "Nur", "Traffic": "Tra", "Solar": "Sol", "Electricity": "Ele"}
+# classical references and model families
+CLASSICAL = ("Persistence (last value)", "Holt-Winters, additive weekly season",
+             "STL + ETS, damped trend", "Theta, weekly deseasonalized",
+             "SARIMA(1,0,0)(0,1,1)7, fixed order")
+SHORT = {"Persistence (last value)": "persistence",
+         "Holt-Winters, additive weekly season": "Holt-Winters",
+         "STL + ETS, damped trend": "STL-ETS", "Theta, weekly deseasonalized": "Theta",
+         "SARIMA(1,0,0)(0,1,1)7, fixed order": "SARIMA"}
+COMB3 = "Combination: source model, seasonal naive, persistence"
+COMB4 = "Combination: source model, seasonal naive, persistence, Holt-Winters"
+LABEL.update({
+    "Persistence (last value)": "Persistence (last value)",
+    "Holt-Winters, additive weekly season": "Holt-Winters, additive weekly season",
+    "STL + ETS, damped trend": "STL + ETS, damped trend",
+    "Theta, weekly deseasonalized": "Theta, weekly deseasonalized",
+    "SARIMA(1,0,0)(0,1,1)7, fixed order": "SARIMA$(1,0,0)(0,1,1)_7$, fixed order",
+    COMB3: "Combination: model, seasonal naive, persistence",
+    COMB4: "Combination: the above plus Holt-Winters"})
+
+
+def classical_rows():
+    fs = sorted(glob.glob(os.path.join(RES, "anchor_rows_classical_*.csv")))
+    return pd.concat([pd.read_csv(f) for f in fs], ignore_index=True) if fs else None
+
+
+def J(name):
+    with open(os.path.join(RES, name)) as fh:
+        return json.load(fh)
+
+
+def mac(name, value, fmt="{:.2f}", sign=False):
+    if isinstance(value, str):
+        s = value
+    elif value is None or (isinstance(value, float) and not np.isfinite(value)):
+        s = "n/a"
+    else:
+        # plain text; every macro is used inside $...$ in the manuscript, where a
+        # leading "-" or "+" is typeset as a math sign
+        s = (("{:+" + fmt[2:]) if sign else fmt).format(value)
+        if sign and float(s) == 0:                   # no "-0.00" / "+0.00"
+            s = s[1:]
+    assert name.isalpha(), name
+    if name in SEEN:
+        # identical redefinitions are skipped; a conflicting one is a bug
+        assert SEEN[name] == s, f"macro {name} redefined: {SEEN[name]} vs {s}"
+        return
+    SEEN[name] = s
+    MAC.append(f"\\newcommand{{\\{name}}}{{{s}}}")
+
+
+def pct(v, d=1, sign=True):
+    """Signed percentage for tables: '+7.1\\%'."""
+    if v is None or not np.isfinite(v):
+        return "--"
+    s = f"{v:+.{d}f}" if sign else f"{v:.{d}f}"
+    if sign and float(s) == 0:
+        s = s[1:]
+    return "$" + s.replace("-", "-") + "\\%$"
+
+
+def cnt(n):
+    """Entity count with a thousands separator: '1{,}350'."""
+    return f"{int(n):,}".replace(",", "{,}")
+
+
+def sg(v, d=2):
+    t = f"{v:+.{d}f}"
+    return t[1:] if float(t) == 0 else t
+
+
+def num(v, d=3):
+    return "--" if v is None or not np.isfinite(v) else f"{v:.{d}f}"
+
+
+TABS = []
+
+
+def write(name, body, src):
+    r"""Each table body is stored twice: as a readable .tex file, and as a macro
+    \GT<Name> in generated/tables.tex. The manuscript uses the macro inside
+    tabular, which avoids the misplaced-noalign problem of \input there."""
+    # a negative number outside math mode would print a hyphen: typeset a minus
+    parts = body.split("$")
+    for i in range(0, len(parts), 2):
+        parts[i] = re.sub(r"(?<![A-Za-z0-9\\{}\-])-(?=\d)", "$-$", parts[i])
+    body = "$".join(parts)
+    with open(os.path.join(GEN, name), "w", encoding="utf-8", newline=chr(10)) as fh:
+        fh.write("% generated by experiments/make_numbers.py -- do not edit\n")
+        fh.write(body)
+    macro = "GT" + "".join(ch for ch in name[4:-4].title() if ch.isalpha())
+    TABS.append("\\newcommand{\\" + macro + "}{%\n" + body.rstrip() + "\n}")
+    MANI.append(f"{name:34s} -> \\{macro:18s} <- {src}")
+
+
+# ====================================================================== survey
+def survey():
+    s = J("survey_stats.json")
+    ex = J("survey_exact_within.json")
+    for m, suf in (("mae_cat", ""), ("mae_total", "T")):
+        for p in PAN:
+            x = s[f"{p}_{m}"]; a = AB[p]
+            mac(f"Sv{a}Mean{suf}", x["mean"], sign=True)
+            mac(f"Sv{a}Lo{suf}", x["mean_ci"][0], sign=True)
+            mac(f"Sv{a}Hi{suf}", x["mean_ci"][1], sign=True)
+            mac(f"Sv{a}Min{suf}", x["min"], sign=True)
+            mac(f"Sv{a}Max{suf}", x["max"], sign=True)
+            mac(f"Sv{a}Ctrl{suf}", x["random_control"], sign=True)
+            mac(f"Sv{a}AppMin{suf}", x["apparent_min"], "{:.0f}", sign=True)
+            mac(f"Sv{a}AppMax{suf}", x["apparent_max"], "{:.0f}", sign=True)
+        A = s[f"assoc_{m}"]
+        for k, nm in (("apparent_gap", "App"), ("js_amp", "Js"), ("js_energy", "Jse"),
+                      ("acf_l2", "Acf")):
+            mac(f"Sv{nm}Pooled{suf}", A[k]["spearman"], sign=True)
+            mac(f"Sv{nm}PooledLo{suf}", A[k]["ci"][0], sign=True)
+            mac(f"Sv{nm}PooledHi{suf}", A[k]["ci"][1], sign=True)
+            mac(f"Sv{nm}PooledP{suf}", A[k]["p_pair_perm_pooled"], "{:.2f}")
+            key = f"{k}|{m}" if k != "apparent_gap" else f"apparent_gap|{m}"
+            mac(f"Sv{nm}Within{suf}", ex[key]["mean_within_panel_spearman"], sign=True)
+            mac(f"Sv{nm}WithinP{suf}", ex[key]["p_exact"], "{:.3f}")
+            for p, v in zip(sorted(PAN), ex[key]["per_panel"]):
+                mac(f"Sv{nm}{AB[p]}{suf}", v, sign=True)
+        kw = s[f"kruskal_grouping_level_{m}"]
+        mac(f"SvKWp{suf}", kw["p"], "{:.3f}")
+        mac(f"SvKWH{suf}", kw["H"], "{:.1f}")
+        mac(f"SvAsymMean{suf}", s[f"direction_asymmetry_{m}"]["mean"], "{:.1f}")
+        mac(f"SvAsymMax{suf}", s[f"direction_asymmetry_{m}"]["max"], "{:.1f}")
+
+    t = pd.read_csv(os.path.join(RES, "survey_split_table.csv"))
+    for p in PAN:
+        c = t[(t.panel == p) & (~t.behavioral)].iloc[0]
+        mac(f"Sv{AB[p]}CtrlBlend", c.blend_gain_mae_cat, "{:.1f}", sign=True)
+        b = t[(t.panel == p) & t.behavioral]
+        mac(f"Sv{AB[p]}BlendMin", b.blend_gain_mae_cat.min(), "{:.1f}", sign=True)
+        mac(f"Sv{AB[p]}BlendMax", b.blend_gain_mae_cat.max(), "{:.1f}", sign=True)
+    for k, nm in (("blend_gain", "Blend"), ("snaive_gain", "Sng")):
+        for m, suf in (("mae_cat", ""), ("mae_total", "T")):
+            x = ex[f"{k}|{m}"]
+            mac(f"Sv{nm}Within{suf}", x["mean_within_panel_spearman"], sign=True)
+            mac(f"Sv{nm}WithinP{suf}", max(x["p_exact"], 0.001), "{:.3f}")
+    # main-text panel summary table (both endpoints)
+    rows = []
+    for p in PAN:
+        c, t = s[f"{p}_mae_cat"], s[f"{p}_mae_total"]
+        rows.append(f"{p} & {pct(c['mean'],2)} & [{c['mean_ci'][0]:+.2f}, {c['mean_ci'][1]:+.2f}] & "
+                    f"{pct(c['min'],2)} to {pct(c['max'],2)} & {pct(c['random_control'],2)} & "
+                    f"{pct(t['mean'],2)} \\\\")
+    write("tab_survey_panels.tex", "\n".join(rows) + "\n", "survey_stats.json")
+
+    # across-seed SD of headroom for every survey split 
+    ss = pd.read_csv(os.path.join(RES, "survey_splits.csv"))
+    sd = ss.groupby(["panel", "split"]).headroom_mae_cat.std(ddof=1)
+    beh = ss[ss.split != "random control"].groupby(["panel", "split"]).headroom_mae_cat.std(ddof=1)
+    for p in PAN:
+        mac(f"Sv{AB[p]}SdMed", beh[p].median())
+        mac(f"Sv{AB[p]}SdMax", beh[p].max())
+    mac("SvNSeeds", f"{int(ss.groupby(['panel', 'split']).seed.nunique().min())}")
+
+    # supplement: complete 36-split table
+    t = pd.read_csv(os.path.join(RES, "survey_split_table.csv"))
+    t["o"] = t.panel.map({p: i for i, p in enumerate(PAN)})
+    t = t.sort_values(["o", "behavioral", "grouping", "split"], ascending=[True, False, True, True])
+    lines = []
+    for _, r in t.iterrows():
+        nm = r.split.replace("->", "$\\to$").replace("random control", "random control")
+        lines.append(f"{r.panel} & {nm} & {int(r.n_A)}/{int(r.n_B)} & {int(r.n_src_train)} & "
+                     f"{pct(r.apparent_gap_mae_cat,1)} & {pct(r.headroom_mae_cat,2)} & "
+                     f"{sd[(r.panel, r.split)]:.2f} & "
+                     f"{pct(r.headroom_mae_total,2)} & {r.acf_l2:.3f} & {r.js_amp:.4f} & "
+                     f"{pct(r.blend_gain_mae_cat,1)} \\\\")
+    write("tab_survey_36.tex", "\n".join(lines) + "\n", "survey_split_table.csv")
+
+
+# ===================================================================== anchors
+def anchors():
+    s = J("anchor_stats.json")
+    T = pd.read_csv(os.path.join(RES, "anchor_table.csv"))
+    key = {"Electricity|Flat -> WorkWeek": "EleFW", "Electricity|WorkWeek -> Flat": "EleWF",
+           "Solar|Flat -> WorkWeek": "SolFW", "Traffic|Flat -> WorkWeek": "TraFW",
+           "Nursing|Ownership (For-profit -> Non-profit)": "NurOwn",
+           "Nursing|Geography (Urban -> Rural)": "NurGeo"}
+    REF = "Target-trained reference (ERM-MLP)"
+    for k, a in key.items():
+        st = s.get(k + "|A")
+        if st is None:
+            continue
+        for m, suf in (("mae_cat", ""), ("mae_total", "T")):
+            h = st["headroom_per_seed"][m]
+            mac(f"An{a}H{suf}", h["mean"], sign=True)
+            mac(f"An{a}Hsd{suf}", h["sd"], "{:.1f}")
+            mac(f"An{a}Hmin{suf}", h["min"], sign=True)
+            mac(f"An{a}Hmax{suf}", h["max"], sign=True)
+            mac(f"An{a}Hpos{suf}", f"{h['n_positive']}")
+            mac(f"An{a}Hn{suf}", f"{h['n']}")
+            e = st["ERM-MLP"]
+            mac(f"An{a}App{suf}", e[f"apparent_gap_{m}"], "{:.0f}", sign=True)
+            mac(f"An{a}AppU{suf}", abs(e[f"apparent_gap_{m}"]), "{:.0f}")
+            mac(f"An{a}HU{suf}", abs(h["mean"]))
+            mac(f"An{a}Src{suf}", e[f"source_{m}"], "{:.4f}")
+            mac(f"An{a}Tr{suf}", e[m], "{:.4f}")
+            mac(f"An{a}Ref{suf}", st[REF][m], "{:.4f}")
+        mac(f"An{a}Ntr", cnt(st['ERM-MLP']['n_train']))
+        mac(f"An{a}Nte", cnt(st['ERM-MLP']['n_test']))
+        g = T[(T.panel + "|" + T.split == k) & (T.manifest == "A")].set_index("method")
+        names = {"DANN": "Dann", "GroupDRO": "Gdro", "IRM": "Irm", "CORAL": "Coral",
+                 "Wave-Mask": "Wave", "FixedBand": "Fixed", "ERM-DLinear": "Dlin",
+                 "Batch-softmax reweighting (former GroupDRO)": "Bsr",
+                 "Seasonal naive": "Sn", "Blend, a chosen on source validation": "Blend",
+                 "FADE gate only (static)": "Gate",
+                 "FADE gate only (input-conditioned)": "Gatead",
+                 "FADE periodicity only": "Per", "FADE (gate + periodicity)": "Fade"}
+        names.update({c: n for c, n in zip(CLASSICAL, ("Pers", "Hw", "Stl", "Theta", "Sarima"))})
+        names.update({COMB3: "CombThree", COMB4: "CombFour"})
+        for meth, nm in names.items():
+            if meth in g.index:
+                mac(f"Ac{a}{nm}", g.loc[meth, "reduction_mae_cat"], "{:.1f}", sign=True)
+                mac(f"Ac{a}{nm}T", g.loc[meth, "reduction_mae_total"], "{:.1f}", sign=True)
+                mac(f"Ac{a}{nm}Up", -g.loc[meth, "reduction_mae_cat"], "{:.1f}")
+                mac(f"Ac{a}{nm}U", abs(g.loc[meth, "reduction_mae_cat"]), "{:.1f}")
+        fixed = g[g.index.str.startswith("Fixed blend")]
+        if len(fixed):
+            b = fixed.reduction_mae_cat.idxmax()
+            mac(f"Ac{a}BestFixed", fixed.reduction_mae_cat.max(), "{:.1f}", sign=True)
+            mac(f"Ac{a}BestFixedAlpha", b.split("=")[1])
+        dg = g.loc[[x for x in ("IRM", "CORAL", "DANN", "GroupDRO") if x in g.index]]
+        if len(dg):
+            mac(f"Ac{a}BestDG", dg.reduction_mae_cat.max(), "{:.1f}", sign=True)
+            mac(f"Ac{a}BestDGName", dg.reduction_mae_cat.idxmax())
+            mac(f"Ac{a}WorstDG", dg.reduction_mae_cat.min(), "{:.1f}", sign=True)
+            mac(f"Ac{a}BestDGT", dg.reduction_mae_total.max(), "{:.1f}", sign=True)
+        cl = g.loc[[x for x in CLASSICAL if x in g.index]]
+        if len(cl):
+            mac(f"Ac{a}BestCl", cl.reduction_mae_cat.max(), "{:.1f}", sign=True)
+            mac(f"Ac{a}BestClT", cl.reduction_mae_total.max(), "{:.1f}", sign=True)
+            mac(f"Ac{a}BestClName", SHORT[cl.reduction_mae_cat.idxmax()])
+            mac(f"Ac{a}WorstCl", cl.reduction_mae_cat.min(), "{:.1f}", sign=True)
+        # mean combination weights over allocation seeds (chosen on source validation)
+        CR = classical_rows()
+        if CR is not None:
+            wr = CR[(CR.panel + "|" + CR.split == k) & (CR.method == COMB3)]
+            if len(wr):
+                mac(f"Cw{a}Model", wr.w_model.mean())
+                mac(f"Cw{a}Sn", wr.w_snaive.mean())
+                mac(f"Cw{a}Pers", wr.w_persistence.mean())
+    R = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(RES, "anchor_rows_*.csv"))])
+    e = R[(R.panel == "Electricity") & (R.split == "Flat -> WorkWeek")]
+    tb = e[(e.method == "ERM-MLP") & (e.manifest == "B")].set_index("seed")
+    rf = e[e.method == REF].set_index("seed")
+    if len(tb):
+        hb = 100 * (tb.mae_cat - rf.mae_cat) / tb.mae_cat
+        mac("AnEleFWHB", hb.mean(), sign=True)
+        mac("AnEleFWNtrB", f"{int(tb.n_train.iloc[0])}")
+    # main table: anchors (headroom) ------------------------------------------
+    order = [("Nursing|Ownership (For-profit -> Non-profit)", "Nursing", "Ownership (for-profit $\\to$ non-profit)"),
+             ("Nursing|Geography (Urban -> Rural)", "Nursing", "Geography (urban $\\to$ rural)"),
+             ("Electricity|Flat -> WorkWeek", "Electricity", "Flat $\\to$ WorkWeek"),
+             ("Electricity|WorkWeek -> Flat", "Electricity", "WorkWeek $\\to$ Flat"),
+             ("Traffic|Flat -> WorkWeek", "Traffic", "Flat $\\to$ WorkWeek"),
+             ("Solar|Flat -> WorkWeek", "Solar", "Flat $\\to$ WorkWeek")]
+    L = []
+    for k, p, lab in order:
+        st = s.get(k + "|A")
+        if st is None:
+            continue
+        e = st["ERM-MLP"]; h = st["headroom_per_seed"]
+        sd = h["mae_cat"]["sd"]
+        sds = f"{sd:.2f}" if sd < 0.1 else f"{sd:.1f}"
+        L.append(f"{p} & {lab} & {cnt(e['n_train'])}/{cnt(e['n_test'])} & "
+                 f"{e['source_mae_cat']:.4f} & {e['mae_cat']:.4f} & "
+                 f"{st[REF]['mae_cat']:.4f} & {pct(e['apparent_gap_mae_cat'], 0)} & "
+                 f"{pct(h['mae_cat']['mean'], 2 if sd < 0.1 else 1)} ({sds}) & "
+                 f"{pct(h['mae_total']['mean'], 2 if sd < 0.1 else 1)} \\\\")
+    write("tab_anchors.tex", "\n".join(L) + "\n", "anchor_stats.json")
+
+    # main table: case study across the four benchmark anchors ----------------
+    rows = [("Source-trained ERM-Stem: error (MAE)", "ERM-MLP"),
+            ("Best of IRM, CORAL, DANN, GroupDRO (hindsight)", "__bestdg"),
+            ("Best of five classical local models (hindsight)", "__bestcl"),
+            ("Seasonal naive (no fitting)", "Seasonal naive"),
+            ("Blend, $\\alpha$ chosen on source validation", "Blend, a chosen on source validation"),
+            ("Combination: model, seasonal naive, persistence", COMB3),
+            ("Combination: the above plus Holt-Winters", COMB4),
+            ("FADE, frequency gate only", "FADE gate only (static)"),
+            ("FADE, periodicity branch only", "FADE periodicity only"),
+            ("FADE, gate + periodicity", "FADE (gate + periodicity)"),
+            ("Best fixed $\\alpha$, chosen on target test (hindsight)", "__bestfixed"),
+            ("Target-trained reference = headroom $H_T$", REF)]
+    cols = [("Electricity|Flat -> WorkWeek", "FW"), ("Electricity|WorkWeek -> Flat", "WF"),
+            ("Traffic|Flat -> WorkWeek", "TR"), ("Solar|Flat -> WorkWeek", "SO")]
+    L = []
+    for lab, meth in rows:
+        cells = []
+        for k, _ in cols:
+            g = T[(T.panel + "|" + T.split == k) & (T.manifest == "A")].set_index("method")
+            if meth == "__bestdg":
+                dg = g.loc[[x for x in ("IRM", "CORAL", "DANN", "GroupDRO") if x in g.index]]
+                cells.append(pct(dg.reduction_mae_cat.max(), 1) if len(dg) else "--")
+            elif meth == "__bestfixed":
+                fx = g[g.index.str.startswith("Fixed blend")]
+                cells.append(pct(fx.reduction_mae_cat.max(), 1) if len(fx) else "--")
+            elif meth == "__bestcl":
+                cl = g.loc[[x for x in CLASSICAL if x in g.index]]
+                cells.append(pct(cl.reduction_mae_cat.max(), 1) if len(cl) else "--")
+            elif meth == "ERM-MLP":
+                cells.append(f"{g.loc[meth,'mae_cat']:.4f}" if meth in g.index else "--")
+            else:
+                cells.append(pct(g.loc[meth, "reduction_mae_cat"], 1) if meth in g.index else "--")
+        L.append(lab + " & " + " & ".join(cells) + " \\\\")
+        if meth in ("ERM-MLP", "__bestdg", COMB4, "FADE (gate + periodicity)", "__bestfixed"):
+            L.append("\\midrule")
+    write("tab_action.tex", "\n".join(L) + "\n", "anchor_table.csv")
+
+    # supplement: every method run on the four anchors, with paired intervals
+    L = []
+    DG4 = ("IRM", "CORAL", "DANN", "GroupDRO")
+    FADE3 = ("FADE gate only (static)", "FADE periodicity only", "FADE (gate + periodicity)")
+    for meth in (("Seasonal naive",) + CLASSICAL + ("Blend, a chosen on source validation",
+                                                    COMB3, COMB4) + ("__mid",) + DG4
+                 + ("__mid",) + FADE3):
+        if meth == "__mid":
+            L.append("\\midrule"); continue
+        cells = []
+        for k, _ in cols:
+            g = T[(T.panel + "|" + T.split == k) & (T.manifest == "A")].set_index("method")
+            if meth not in g.index:
+                cells.append("--"); continue
+            r = g.loc[meth]
+            ci = [float(v) for v in str(r.reduction_mae_cat_ci).strip("[]").split(",")]
+            cis = [("0.0" if abs(v) < 0.05 else f"{v:+.1f}") for v in ci]
+            cells.append(f"{pct(r.reduction_mae_cat, 1)} [{cis[0]}, {cis[1]}]")
+        L.append(f"{LABEL.get(meth, meth)} & " + " & ".join(cells) + " \\\\")
+    write("tab_classical.tex", "\n".join(L) + "\n", "anchor_table.csv")
+
+    # supplement: full method table, both electricity directions, both manifests
+    L = []
+    for k, lab in (("Electricity|Flat -> WorkWeek", "Flat$\\to$WorkWeek"),
+                   ("Electricity|WorkWeek -> Flat", "WorkWeek$\\to$Flat")):
+        for man in ("A", "B"):
+            g = T[(T.panel + "|" + T.split == k) & (T.manifest == man)]
+            L.append(f"\\multicolumn{{5}}{{@{{}}l}}{{\\emph{{{lab}, manifest {man}}}}} \\\\")
+            for _, r in g.iterrows():
+                if r.method.startswith("Fixed blend") or r.method == "source error (s_te)":
+                    continue
+                ci = r.reduction_mae_cat_ci if isinstance(r.reduction_mae_cat_ci, str) else "[]"
+                lo, hi = [float(v) for v in ci.strip("[]").split(",")] if ci != "[]" else (np.nan, np.nan)
+                ntr = "--" if int(r.n_train) == 0 else f"{int(r.n_train)}"
+                L.append(f"{LABEL.get(r.method, r.method)} & {ntr} & {r.mae_cat:.4f} & "
+                         f"{pct(r.reduction_mae_cat,2)} [{sg(lo)}, {sg(hi)}] & "
+                         f"{pct(r.reduction_mae_total,2)} \\\\")
+            L.append("\\midrule")
+    write("tab_elec_full.tex", "\n".join(L[:-1]) + "\n", "anchor_table.csv")
+
+
+# ==================================================================== temporal
+def temporal():
+    t = J("temporal_stats.json")
+    T = pd.DataFrame(t["temporal"])
+    # seasonal coverage (an_coverage_check.py): share of deployment-era days whose
+    # calendar month occurs in the observed history
+    cpath = os.path.join(RES, "coverage_table.csv")
+    CV = pd.read_csv(cpath) if os.path.exists(cpath) else None
+
+    def cov(p, setting, months=None):
+        if CV is None:
+            return "--"
+        g = CV[(CV.panel == p) & (CV.setting == setting)]
+        if months is not None:
+            g = g[g.months == months]
+        return f"{100 * g.coverage.iloc[0]:.0f}\\%" if len(g) else "--"
+
+    if CV is not None:
+        cs = J("coverage_stats.json")
+        mac("CovFullN", f"{cs['n_full']}"); mac("CovPartN", f"{cs['n_partial']}")
+        mac("CovFullMinR", cs["full_min_r"], sign=True); mac("CovFullMedR", cs["full_median_r"], sign=True)
+        mac("CovPartMedR", cs["partial_median_r"], sign=True)
+        mac("CovPartMaxR", cs["partial_max_r"], sign=True)
+        mac("CovFullMaxBias", cs["full_max_bias"], sign=True)
+        mac("CovPartMedBias", cs["partial_median_bias"], sign=True)
+        mac("CovRho", cs["spearman_coverage_r"], sign=True)
+        for p in PAN:
+            g = CV[(CV.panel == p) & (CV.setting == "full history")]
+            if len(g):
+                mac(f"Cov{AB[p]}", 100 * g.coverage.iloc[0], "{:.0f}")
+    L = []
+    for p in ("Nursing", "Electricity", "Traffic", "Solar"):
+        for v in ("standard", "clean", "prospective"):
+            g = T[(T.panel == p) & (T.variant == v)].set_index("metric")
+            if g.empty:
+                continue
+            c, tt = g.loc["mae_cat"], g.loc["mae_total"]
+            lab = {"standard": p, "clean": "\\quad clean windows",
+                   "prospective": "\\quad prospective cohort"}[v]
+            L.append(f"{lab} & {int(c.n)} ({int(c.n_splits)}) & {int(c.span_months)} mo & "
+                     f"{cov(p, 'full history')} & "
+                     f"{c.pearson:+.2f} & {c.spearman:+.2f} & {c.bias:+.2f} & "
+                     f"{100*c.agree:.0f}\\% & {tt.pearson:+.2f} \\\\")
+            if v == "standard":
+                a = AB[p]
+                mac(f"Tp{a}R", c.pearson, sign=True); mac(f"Tp{a}Rho", c.spearman, sign=True)
+                mac(f"Tp{a}Bias", c.bias, sign=True); mac(f"Tp{a}Agree", 100 * c.agree, "{:.0f}")
+                mac(f"Tp{a}RT", tt.pearson, sign=True)
+            else:
+                mac(f"TpNur{v.capitalize()}R", c.pearson, sign=True)
+                mac(f"TpNur{v.capitalize()}Bias", c.bias, sign=True)
+    write("tab_temporal.tex", "\n".join(L) + "\n", "temporal_stats.json")
+    for a in t.get("window_audit", []):
+        if a["variant"] == "clean":
+            mac("AuWindows", f"{int(a['windows']):,}".replace(",", "{,}"))
+            mac("AuImpTarget", f"{int(a['imputed_target_windows'])}")
+            mac("AuPostOrigin", f"{int(a['post_origin_input_windows'])}")
+            mac("AuExcluded", f"{int(a['excluded_windows'])}")
+        if a["variant"] == "prospective":
+            mac("AuProspExcluded", f"{int(a['excluded_windows'])}")
+    # seasonal truncation
+    if "seasonal" in t:
+        S = pd.DataFrame(t["seasonal"])
+        L = []
+        for (p, mo), g in S.groupby(["panel", "months"]):
+            g = g.set_index("metric"); c = g.loc["mae_cat"]
+            L.append(f"{p} & {int(mo)} & {cov(p, 'truncated', int(mo))} & {int(c.n)} & "
+                     f"{c.pearson:+.2f} & {100*c.agree:.0f}\\% & {c.bias:+.2f} \\\\")
+            mac(f"Se{AB[p]}{'abcdefghijklmnopqrstuvwxyz'[int(mo)]}R", c.pearson, sign=True)
+            mac(f"Se{AB[p]}{'abcdefghijklmnopqrstuvwxyz'[int(mo)]}Bias", c.bias, sign=True)
+            mac(f"Se{AB[p]}{'abcdefghijklmnopqrstuvwxyz'[int(mo)]}Agree", 100 * c.agree, "{:.0f}")
+        write("tab_seasonal.tex", "\n".join(L) + "\n", "temporal_stats.json")
+    if "history" in t:
+        H = pd.DataFrame(t["history"])
+        L = []
+        for _, r in H[H.metric == "mae_cat"].iterrows():
+            cur = ", ".join(f"{d}: {v:+.2f}" for d, v in zip(r.ladder, r.curve))
+            L.append(f"{r.panel} & {int(r.n_splits)} & {r.final:+.2f} & "
+                     f"{'--' if pd.isna(r.settle_day) else int(r.settle_day)} & {cur} \\\\")
+            mac(f"Hi{AB[r.panel]}Settle", "n/a" if pd.isna(r.settle_day) else f"{int(r.settle_day)}")
+            mac(f"Hi{AB[r.panel]}SettleMo", "n/a" if pd.isna(r.settle_months) else f"{r.settle_months:.0f}")
+            mac(f"Hi{AB[r.panel]}Penult", f"{int(r.ladder[-2])}")
+            mac(f"Hi{AB[r.panel]}PenultGap", abs(r.curve[-1] - r.curve[-2]), "{:.1f}")
+            mac(f"Hi{AB[r.panel]}First", r.curve[0], "{:.1f}", sign=True)
+            mac(f"Hi{AB[r.panel]}FirstDay", f"{int(r.ladder[0])}")
+            mac(f"Hi{AB[r.panel]}Final", r.final, "{:.1f}", sign=True)
+        write("tab_history.tex", "\n".join(L) + "\n", "temporal_stats.json")
+
+
+def cohort():
+    c = pd.read_csv(os.path.join(RES, "nursing_cohort_audit.csv")).iloc[0]
+    f = lambda v: f"{int(v):,}".replace(",", "{,}")
+    mac("CoAnalysis", f(c.analysis_cohort_both_years))
+    mac("CoProsp", f(c.prospective_cohort_2024_only))
+    mac("CoProspOnly", f(c.in_prospective_not_analysis))
+    mac("CoAnalysisOnly", f(c.in_analysis_not_prospective))
+    mac("CoNoDep", f(c.prospective_with_no_2025_data))
+    mac("CoImputed", f(c.imputed_cells_analysis_cohort))
+    mac("CoImputedPct", c.pct_imputed_cells, "{:.3f}")
+
+
+def main():
+    for fn in (survey, anchors, temporal, cohort, screen, gate, fullscale, supplementary, extended):
+        try:
+            fn()
+        except FileNotFoundError as e:
+            print(f"[skip {fn.__name__}] missing {e.filename}")
+    with open(os.path.join(GEN, "numbers.tex"), "w", encoding="utf-8", newline=chr(10)) as fh:
+        fh.write("% generated by experiments/make_numbers.py -- do not edit\n")
+        fh.write("\n".join(MAC) + "\n")
+    with open(os.path.join(GEN, "tables.tex"), "w", encoding="utf-8", newline=chr(10)) as fh:
+        fh.write("% generated by experiments/make_numbers.py -- do not edit\n")
+        fh.write("\n".join(TABS) + "\n")
+    MANI.insert(0, "numbers.tex, tables.tex             <- all result files above")
+    with open(os.path.join(GEN, "MANIFEST.txt"), "w", newline=chr(10)) as fh:
+        fh.write("\n".join(MANI) + "\n")
+    print(f"{len(MAC)} macros; tables: {len(MANI) - 1}")
+
+
+# placeholders completed below once those analyses exist
+NICE = {"acf_l2": "autocorrelation distance", "js_mean": "four-band amplitude divergence",
+        "js_fine": "eight-band amplitude divergence", "js_perchan": "per-channel amplitude divergence",
+        "mmd_profile": "profile MMD", "w1_profile": "profile Wasserstein distance",
+        "acf_weighted": "autocorrelation-weighted divergence", "diff_ratio": "difficulty ratio"}
+
+
+def screen():
+    st = J("screen_stats.json")
+    nd, nc = st["n_discovery"], st["n_confirmation"]
+    for p in PAN:
+        mac(f"ScNDisc{AB[p]}", f"{nd[p]}"); mac(f"ScNConf{AB[p]}", f"{nc[p]}")
+    mac("ScNDiscTotal", f"{sum(nd.values())}"); mac("ScNConfTotal", f"{sum(nc.values())}")
+    d = st["discovery"]
+    mac("ScSelectedName", NICE.get(d["selected"], d["selected"]))
+    mac("ScSelP", d["p_selection_adjusted"], "{:.4f}")
+    mac("ScBar", d["bar"], sign=True)
+    mac("ScCritAcf", d["criterion"]["acf_l2"], "{:.3f}", sign=True)
+    mac("ScCritJsf", d["criterion"]["js_fine"], "{:.3f}", sign=True)
+    mac("ScCritJs", d["criterion"]["js_mean"], "{:.3f}", sign=True)
+    mac("ScNullMean", d["null_mean"], sign=True); mac("ScNullNinetyFive", d["null_95"], sign=True)
+    for p_ in PAN:
+        mac(f"ScDiscRho{AB[p_]}", d["spearman"][p_]["acf_l2"], sign=True)
+        mac(f"ScDiscJs{AB[p_]}", d["spearman"][p_]["js_amp"], sign=True)
+        mac(f"ScDiscJsf{AB[p_]}", d["spearman"][p_]["js_fine"], sign=True)
+    L = []
+    for c in ("js_mean", "js_fine", "js_perchan", "mmd_profile", "w1_profile", "acf_l2",
+              "acf_weighted", "diff_ratio"):
+        sp = [d["spearman"][p_][c] for p_ in ("Nursing", "Electricity", "Solar", "Traffic")]
+        L.append(f"{NICE[c]} & {d['criterion'][c]:+.3f} & " +
+                 " & ".join(f"{v:+.2f}" for v in sp) + " \\\\")
+    write("tab_disc.tex", "\n".join(L) + "\n", "screen_stats.json")
+    C = pd.DataFrame(st["confirmation"])
+    L = []
+    better = agree_better = 0
+    for p in ("Nursing", "Electricity", "Solar", "Traffic"):
+        a = C[(C.panel == p) & (C.statistic == "acf_l2")].iloc[0]
+        j = C[(C.panel == p) & (C.statistic == "js_amp")].iloc[0]
+        jf = C[(C.panel == p) & (C.statistic == "js_fine")]
+        jf = jf.iloc[0].spearman if len(jf) else np.nan
+        ci = a.spearman_ci
+        L.append(f"{p} & {int(a.n)} & {a.spearman:+.2f} & [{ci[0]:+.2f}, {ci[1]:+.2f}] & "
+                 f"{j.spearman:+.2f} & {jf:+.2f} & {a.frozen_mae:.2f} & {a.baseline_mae:.2f} & "
+                 f"{100*a.frozen_agree:.0f}\\% & {100*a.majority:.0f}\\% \\\\")
+        mac(f"ScConfJsf{AB[p]}", jf, sign=True)
+        mac(f"ScConfRho{AB[p]}", a.spearman, sign=True)
+        mac(f"ScConfRhoLo{AB[p]}", ci[0], sign=True); mac(f"ScConfRhoHi{AB[p]}", ci[1], sign=True)
+        mac(f"ScConfJs{AB[p]}", j.spearman, sign=True)
+        mac(f"ScFrozen{AB[p]}", a.frozen_mae); mac(f"ScBase{AB[p]}", a.baseline_mae)
+        mac(f"ScLoo{AB[p]}", a.loo_r_within_confirmation, sign=True)
+        better += a.frozen_mae < a.baseline_mae
+        agree_better += a.frozen_agree > a.majority
+    mac("ScFrozenBetterN", f"{better}"); mac("ScAgreeBetterN", f"{agree_better}")
+    write("tab_screens.tex", "\n".join(L) + "\n", "screen_stats.json")
+    LO = pd.DataFrame(st["lopo"])
+    mac("ScLopoRhoMin", LO.rho.min(), sign=True); mac("ScLopoRhoMax", LO.rho.max(), sign=True)
+    mac("ScLopoBelowN", f"{int((LO.threshold_acc <= LO.majority).sum())}")
+    mac("ScLopoSelAcfN", f"{int((LO.selected == 'acf_l2').sum())}")
+    mac("ScLopoSelected", ", ".join(NICE.get(x, x) for x in sorted(set(LO.selected))))
+    L = [f"{r.held_out} & {NICE.get(r.selected, r.selected)} & {r.rho:+.2f} & {r.rho_acf_l2:+.2f} & "
+         f"{r.quantile:.2f} & {100*r.threshold_acc:.0f}\\% & {100*r.majority:.0f}\\% & {int(r.n)} \\\\"
+         for r in LO.itertuples()]
+    write("tab_lopo.tex", "\n".join(L) + "\n", "screen_stats.json")
+    PT = pd.read_csv(os.path.join(RES, "policy_table.csv"))
+    L = []
+    for p in ("Nursing", "Electricity", "Solar", "Traffic"):
+        for b in (0.25, 0.5):
+            g = PT[(PT.panel == p) & (PT.budget_frac == b)].set_index("policy")
+            if g.empty:
+                continue
+            def f(k):
+                v = g.loc[k, "captured_frac"]
+                return "--" if not np.isfinite(v) else f"{100*v:.0f}\\%"
+            L.append(f"{p if b == 0.25 else ''} & {int(100*b)}\\% ({int(g.loc['screen','k'])} of "
+                     f"{int(g.loc['screen','n'])}) & {f('screen')} & {f('random')} & "
+                     f"{f('apparent')} & {f('hindsight')} & "
+                     f"{int(g.loc['screen','missed_opportunities'])} of "
+                     f"{int(g.loc['screen','opportunities'])} \\\\")
+    write("tab_policy.tex", "\n".join(L) + "\n", "policy_table.csv")
+    for b, nm in ((0.25, "Q"), (0.5, "H")):
+        for p_ in PAN:
+            g = PT[(PT.budget_frac == b) & (PT.panel == p_)].set_index("policy")
+            for pol in ("screen", "random", "apparent", "hindsight"):
+                v = g.loc[pol, "captured_frac"] if pol in g.index else np.nan
+                mac(f"Po{nm}{pol.capitalize()}{AB[p_]}",
+                    100 * v if np.isfinite(v) else np.nan, "{:.0f}")
+            if "screen" in g.index:
+                mac(f"PoOpp{AB[p_]}", f"{int(g.loc['screen', 'opportunities'])}")
+                mac(f"PoN{AB[p_]}", f"{int(g.loc['screen', 'n'])}")
+        g = PT[PT.budget_frac == b]
+        for pol in ("screen", "random", "apparent", "hindsight"):
+            mac(f"Po{nm}{pol.capitalize()}", 100 * g[g.policy == pol].captured_frac.mean(), "{:.0f}")
+    ev = PT[PT.policy == "blend everywhere, no diagnostic"].set_index("panel")
+    for p in PAN:
+        if p in ev.index:
+            mac(f"PoBlend{AB[p]}", ev.loc[p, "blend_gain_if_blend_on_selected"], "{:.1f}", sign=True)
+            mac(f"PoBlendHarm{AB[p]}", f"{int(ev.loc[p, 'blend_harm_splits'])}")
+
+
+def gate():
+    g = pd.read_csv(os.path.join(RES, "gate_stability_summary.csv")).iloc[0]
+    mac("GaRuns", f"{int(g.n_runs)}")
+    mac("GaRmean", g.gate_icc_r_mean, sign=True); mac("GaRmin", g.gate_icc_r_min, sign=True)
+    mac("GaRmax", g.gate_icc_r_max, sign=True)
+    mac("GaHalf", g.disjoint_half_corr); mac("GaBetween", g.mean_between_run_corr)
+    mac("GaBetweenMin", g.min_between_run_corr); mac("GaMaxDev", g.max_abs_gate_deviation)
+    mac("GaRetMin", g.retained_energy_min); mac("GaRetMean", g.retained_energy_mean)
+    r = pd.read_csv(os.path.join(RES, "gate_runs.csv"))
+    ret = r[[c for c in r if c.startswith("retained")]]
+    mac("GaRetMax", float(ret.max().max()))
+    mac("GaAcc", g.gate_vs_erm_mae_cat_pct, sign=True)
+    mac("GaAccT", g.gate_vs_erm_mae_total_pct, sign=True)
+    mac("GaAccU", abs(g.gate_vs_erm_mae_cat_pct))
+    mac("GaAccWord", "higher" if g.gate_vs_erm_mae_cat_pct > 0 else "lower")
+    I = pd.read_csv(os.path.join(RES, "gate_icc_aligned.csv"))
+    for b, nm in (("A3", "IccA"), ("D3", "IccDthree"), ("D2", "IccDtwo"), ("D1", "IccDone")):
+        v = I[I.band == b].ICC
+        mac(f"{nm}Lo", v.min()); mac(f"{nm}Hi", v.max())
+
+
+def fullscale():
+    W = pd.read_csv(os.path.join(RES, "fullscale_wilcoxon.csv"))
+    M = pd.read_csv(os.path.join(RES, "fullscale_means.csv"))
+    st = J("fullscale_stats.json")
+    for proto, nm in (("LFO", "Lfo"), ("LFO-T", "Lfot"), ("LSO-T", "Lsot")):
+        w = W[(W.metric == "mae_cat") & (W.protocol == proto)]
+        if w.empty:
+            continue
+        mac(f"Fs{nm}MaxAbs", w.pct_vs_erm.abs().max(), "{:.1f}")
+        core = w[~w.method.isin(["Autoformer", "FEDformer", "Wave-Mask",
+                                 "Batch-softmax reweighting (former GroupDRO)"])]
+        mac(f"Fs{nm}MaxAbsCore", core.pct_vs_erm.abs().max(), "{:.1f}")
+        dg4 = w[w.method.isin(["IRM", "CORAL", "DANN", "GroupDRO"])]
+        mac(f"Fs{nm}DgBest", dg4.pct_vs_erm.max(), "{:.2f}", sign=True)
+        mac(f"Fs{nm}DgWorst", dg4.pct_vs_erm.min(), "{:.2f}", sign=True)
+        mac(f"Fs{nm}GdroU", abs(w[w.method == "GroupDRO"].pct_vs_erm.iloc[0]), "{:.1f}")
+        for meth, k in (("FADE gate only (static)", "Gate"), ("FADE (gate + periodicity)", "Fade"),
+                        ("DANN", "Dann"), ("GroupDRO", "Gdro"), ("IRM", "Irm"), ("CORAL", "Coral"),
+                        ("Batch-softmax reweighting (former GroupDRO)", "Bsr"),
+                        ("Wave-Mask", "Wave"), ("Autoformer", "Auto"), ("FEDformer", "Fed"),
+                        ("ERM-DLinear", "Dlin"), ("FixedBand", "Fixed"),
+                        ("IRM (penalty active)", "Irma"), ("CORAL (penalty active)", "Corala"),
+                        ("DANN (penalty active)", "Danna")):
+            r = w[w.method == meth]
+            if len(r):
+                mac(f"Fs{nm}{k}", r.pct_vs_erm.iloc[0], "{:.2f}", sign=True)
+                mac(f"Fs{nm}{k}Win", r.win_pct.iloc[0], "{:.0f}")
+                mac(f"Fs{nm}{k}Rb", r.effect_rb.iloc[0], sign=True)
+    wc = W[W.metric == "mae_cat"]
+    mac("FsBestGainAll", wc.pct_vs_erm.max(), "{:.2f}", sign=True)
+    mac("FsBestGainAllU", abs(wc.pct_vs_erm.max()), "{:.2f}")
+    act = wc[wc.method.str.contains("penalty active")]
+    if len(act):
+        mac("FsActiveBest", act.pct_vs_erm.max(), "{:.2f}", sign=True)
+        mac("FsActiveWorst", act.pct_vs_erm.min(), "{:.2f}", sign=True)
+    n = st["n_facilities_test"]
+    for proto, nm in (("LFO", "Lfo"), ("LFO-T", "Lfot"), ("LSO-T", "Lsot")):
+        if proto in n:
+            mac(f"Fs{nm}N", f"{n[proto]:,}".replace(",", "{,}"))
+    L = []
+    order = ["ERM-MLP", "ERM-DLinear", "Autoformer", "FEDformer", "Wave-Mask", "FixedBand",
+             "IRM", "CORAL", "DANN", "IRM (penalty active)", "CORAL (penalty active)",
+             "DANN (penalty active)", "GroupDRO", "Batch-softmax reweighting (former GroupDRO)",
+             "FADE gate only (static)", "FADE (gate + periodicity)"]
+    for meth in order:
+        g = M[M.method == meth].set_index("protocol")
+        if g.empty:
+            continue
+        cells = []
+        for proto in ("LFO", "LFO-T", "LSO-T"):
+            cells.append(f"{g.loc[proto,'mae_cat_mean']:.4f} & {g.loc[proto,'mae_total_mean']:.4f}"
+                         if proto in g.index else "-- & --")
+        lab = LABEL.get(meth, meth)
+        L.append(f"{lab} & {int(g['mae_cat_count'].max())} & " + " & ".join(cells) + " \\\\")
+    write("tab_fullscale.tex", "\n".join(L) + "\n", "fullscale_means.csv")
+    L = []
+    for proto in ("LFO", "LFO-T", "LSO-T"):
+        w = W[(W.metric == "mae_cat") & (W.protocol == proto)]
+        for r in w.itertuples():
+            pv = "$<$0.001" if r.p_holm < 0.001 else f"{r.p_holm:.3f}"
+            L.append(f"{proto} & {LABEL.get(r.method, r.method)} & "
+                     f"{r.n_facilities:,}".replace(",", "{,}") +
+                     f" & {r.pct_vs_erm:+.2f}\\% & {r.win_pct:.1f}\\% & {r.effect_rb:+.3f} & {pv} \\\\")
+        L.append("\\midrule")
+    write("tab_wilcoxon.tex", "\n".join(L[:-1]) + "\n", "fullscale_wilcoxon.csv")
+
+
+def supplementary():
+    """Supplement G: development-subset ablations and sensitivity sweeps, run
+    under both endpoints with observed-era model selection (supplementary_runs.py)."""
+    D = {m: os.path.join(RES, f"supplementary_{m}") for m in ("mae_cat", "mae_total")}
+
+    def rd(m, name):
+        f = os.path.join(D[m], name)
+        return pd.read_csv(f) if os.path.exists(f) else None
+
+    rows = []
+    specs = [("Gate placement", "ablation_placement.csv", "placement",
+              {"feature": "learned feature (used)", "raw-input": "raw input"}),
+             ("Invariance estimator", "ablation_category.csv", "variant",
+              {"category-conditioned": "category-conditioned (used)", "marginal": "marginal"}),
+             ("Gate transform", "ablation_fft.csv", "gate",
+              {"wavelet-subband": "wavelet sub-band (used)", "global-FFT": "global Fourier mask"})]
+    for block, fn, col, lab in specs:
+        c, t = rd("mae_cat", fn), rd("mae_total", fn)
+        if c is None:
+            continue
+        for _, r in c.iterrows():
+            tv = t[t[col] == r[col]].mae.iloc[0] if t is not None else np.nan
+            rows.append(f"{block} & {lab.get(r[col], r[col])} & {r.mae:.4f} & {num(tv, 4)} \\\\")
+        rows.append("\\midrule")
+    c, t = rd("mae_cat", "ablation_wavelet.csv"), rd("mae_total", "ablation_wavelet.csv")
+    if c is not None:
+        rows.append(f"Wavelet basis and depth & best / worst of {len(c)} & "
+                    f"{c.mae.min():.4f} / {c.mae.max():.4f} & "
+                    + (f"{t.mae.min():.4f} / {t.mae.max():.4f}" if t is not None else "--")
+                    + " \\\\")
+        mac("LgWavMin", c.mae.min(), "{:.4f}"); mac("LgWavMax", c.mae.max(), "{:.4f}")
+    e = rd("mae_cat", "ablation_ermref.csv")
+    if e is not None:
+        mac("LgErm", e.mae.iloc[0], "{:.4f}")
+        te = rd("mae_total", "ablation_ermref.csv")
+        mac("LgErmT", te.mae.iloc[0] if te is not None else np.nan, "{:.4f}")
+    if rows:
+        write("tab_ablation.tex", "\n".join(rows) + "\n", "supplementary_*/ablation_*.csv")
+    lam = rd("mae_cat", "ablation_lambda.csv")
+    if lam is not None:
+        L = [f"{r.lam:g} & {r.mae:.4f} & {r.ret_A3:.3f} & {r.ret_D3:.3f} & {r.ret_D2:.3f} & "
+             f"{r.ret_D1:.3f} & {r.gate_min:.2f}--{r.gate_max:.2f} \\\\" for r in lam.itertuples()]
+        write("tab_lambda.tex", "\n".join(L) + "\n", "supplementary_mae_cat/ablation_lambda.csv")
+        mac("LgLamMin", lam.mae.min(), "{:.4f}"); mac("LgLamMax", lam.mae.max(), "{:.4f}")
+        mac("LgGateMin", lam.gate_min.min()); mac("LgGateMax", lam.gate_max.max())
+    bb = rd("mae_cat", "ablation_backbone.csv")
+    if bb is not None:
+        for r in bb.itertuples():
+            nm = "Lin" if r.backbone == "mlp" else "Tr"
+            mac(f"LgBb{nm}Erm", r.ERM, "{:.4f}"); mac(f"LgBb{nm}Fade", r.CD_ISG_TS, "{:.4f}")
+    cost = rd("mae_cat", "ablation_cost.csv")
+    if cost is not None:
+        L = [f"{LABEL.get(r.method, r.method).replace('CD-ISG-TS', 'FADE, gate only')} & "
+             f"{int(r.n_params):,}".replace(",", "{,}") +
+             f" & {r.train_time_3ep_s:.2f} & {1000*r.infer_512_s:.1f} \\\\" for r in cost.itertuples()]
+        write("tab_cost.tex", "\n".join(L) + "\n", "supplementary_mae_cat/ablation_cost.csv")
+    sl, st_ = rd("mae_cat", "sensitivity_lookback.csv"), rd("mae_total", "sensitivity_lookback.csv")
+    dg = rd("mae_cat", "sensitivity_diagnostic.csv")
+    if sl is not None:
+        L = []
+        for r in sl.itertuples():
+            t = st_[(st_.L == r.L) & (st_.H == r.H)] if st_ is not None else None
+            tg = f"{t.gain_pct.iloc[0]:+.2f}\\%" if t is not None and len(t) else "--"
+            h = dg[(dg.L == r.L) & (dg.H == r.H)] if dg is not None else None
+            hs = f"{h.reducible_gap_pct.iloc[0]:+.2f}\\% ({h.sd.iloc[0]:.2f})" if h is not None and len(h) else "--"
+            L.append(f"{r.L} & {r.H} & {r.erm:.4f} & {r.gain_pct:+.2f}\\% & {tg} & {hs} \\\\")
+        write("tab_sens.tex", "\n".join(L) + "\n", "supplementary_*/sensitivity_lookback.csv, sensitivity_diagnostic.csv")
+        mac("LgSensGainMin", sl.gain_pct.min(), sign=True); mac("LgSensGainMax", sl.gain_pct.max(), sign=True)
+    if dg is not None:
+        mac("LgDiagMin", dg.reducible_gap_pct.min(), sign=True)
+        mac("LgDiagMax", dg.reducible_gap_pct.max(), sign=True)
+    bt = rd("mae_cat", "sensitivity_batch.csv")
+    if bt is not None:
+        mac("LgBatchMin", bt.gain_pct.min(), sign=True); mac("LgBatchMax", bt.gain_pct.max(), sign=True)
+    oc = rd("mae_cat", "checks_oracle_class.csv")
+    if oc is not None:
+        mac("LgRefStem", oc.gap.iloc[0], sign=True); mac("LgRefLin", oc.gap.iloc[1], sign=True)
+    th = rd("mae_cat", "checks_thresholds.csv")
+    if th is not None:
+        L = []
+        for (pn, tag), g in th.groupby(["panel", "threshold"], sort=False):
+            L.append(f"{pn} & {tag} & {len(g)} & {g.gap.mean():+.2f}\\% & "
+                     f"{g.gap.min():+.2f}\\% to {g.gap.max():+.2f}\\% \\\\")
+            mac(f"Dc{AB[pn]}{'Q' if tag == 'quartile' else 'D'}", g.gap.mean(), sign=True)
+            mac(f"Dc{AB[pn]}{'Q' if tag == 'quartile' else 'D'}Max", g.gap.max(), sign=True)
+        write("tab_decile.tex", "\n".join(L) + "\n", "supplementary_mae_cat/checks_thresholds.csv")
+
+
+# ======================================================= extended analyses
+ANCH = [("Nursing", "Ownership (For-profit -> Non-profit)", "NurOwn", "Nursing, ownership"),
+        ("Nursing", "Geography (Urban -> Rural)", "NurGeo", "Nursing, geography"),
+        ("Electricity", "Flat -> WorkWeek", "EleFW", "Electricity, Flat$\\to$WorkWeek"),
+        ("Electricity", "WorkWeek -> Flat", "EleWF", "Electricity, WorkWeek$\\to$Flat"),
+        ("Traffic", "Flat -> WorkWeek", "TraFW", "Traffic, Flat$\\to$WorkWeek"),
+        ("Solar", "Flat -> WorkWeek", "SolFW", "Solar, Flat$\\to$WorkWeek")]
+FAM = [("ERM-Stem", "Stem"), ("ERM-Stem + seasonal blend", "Blend"),
+       ("ERM-DLinear", "Dlin"), ("Patch transformer", "Patch")]
+
+
+def cat(pattern):
+    fs = sorted(glob.glob(os.path.join(RES, pattern)))
+    return pd.concat([pd.read_csv(f) for f in fs], ignore_index=True) if fs else None
+
+
+def decision():
+    """Split-level association and decision analysis (an_temporal_decision.py)."""
+    ap = os.path.join(RES, "temporal_assoc_split.csv")
+    dp = os.path.join(RES, "temporal_decision.csv")
+    if not (os.path.exists(ap) and os.path.exists(dp)):
+        return
+    S, D = pd.read_csv(ap), pd.read_csv(dp)
+    L = []
+    for p in ("Nursing", "Electricity", "Traffic", "Solar"):
+        s = S[S.panel == p].iloc[0]; a = AB[p]
+        mac(f"Ts{a}N", f"{int(s.n_splits)}")
+        for k, c in (("R", "pearson"), ("Rho", "spearman")):
+            mac(f"Ts{a}{k}", s[c], "{:.2f}", sign=True)
+            mac(f"Ts{a}{k}Lo", s[c + "_lo"], "{:.2f}", sign=True)
+            mac(f"Ts{a}{k}Hi", s[c + "_hi"], "{:.2f}", sign=True)
+        mac(f"Ts{a}Mae", s.mae, "{:.2f}")
+        g = D[D.panel == p].set_index("thr")
+        for t in g.index:
+            r = g.loc[t]
+            tag = "" if t == 3.0 else {1.0: "One", 2.0: "Two", 5.0: "Five"}[t]
+            mac(f"Ts{a}Acc{tag}", 100 * r.acc, "{:.0f}")
+            mac(f"Ts{a}Maj{tag}", 100 * r.majority, "{:.0f}")
+            for c in ("tp", "fp", "fn", "tn"):
+                mac(f"Ts{a}{c.title()}{tag}", f"{int(r[c])}")
+            mac(f"Ts{a}Gain{tag}", r.gain_rule, "{:.2f}")
+            mac(f"Ts{a}GainAll{tag}", r.gain_always, "{:.2f}")
+            mac(f"Ts{a}Regret{tag}", r.regret, "{:.2f}")
+            L.append(f"{p if t == g.index[0] else ''} & {t:.0f}\\% & "
+                     f"{int(r.tp)}/{int(r.fp)}/{int(r.fn)}/{int(r.tn)} & "
+                     f"{100 * r.acc:.0f}\\% & {100 * r.majority:.0f}\\% & "
+                     f"{r.gain_rule:.2f} & {r.gain_always:.2f} & {r.gain_oracle:.2f} \\\\")
+        L.append("\\midrule")
+    write("tab_decision.tex", "\n".join(L[:-1]) + "\n", "temporal_decision.csv")
+    A = []
+    z = lambda v: "0.00" if abs(v) < 0.005 else f"{v:+.2f}"  # no signed zero
+    for p in ("Nursing", "Electricity", "Traffic", "Solar"):
+        s = S[S.panel == p].iloc[0]
+        A.append(f"{p} & {int(s.n_splits)} & {z(s.pearson)} [{z(s.pearson_lo)}, "
+                 f"{z(s.pearson_hi)}] & {z(s.spearman)} [{z(s.spearman_lo)}, "
+                 f"{z(s.spearman_hi)}] & {z(s.bias)} & {s.mae:.2f} & "
+                 f"{z(s.slope)} & {z(s.intercept)} \\\\")
+    write("tab_assoc_split.tex", "\n".join(A) + "\n", "temporal_assoc_split.csv")
+
+
+def budgets_dates():
+    """Budget, coverage and decision-date experiments (an_budget_dates.py summaries): coverage at fixed history length,
+    several decision dates with costs, joint training and fine-tuning."""
+    z = lambda v, d=2: "0." + "0" * d if abs(v) < 0.5 * 10 ** -d else f"{v:+.{d}f}"
+    zr = lambda v: z(v, 3) if abs(v) >= 0.995 else z(v)   # correlations near 1
+    PN = ("Nursing", "Electricity", "Traffic", "Solar")
+    # ---- 1. coverage separated from history length ----
+    p = os.path.join(RES, "summary_coverage.csv")
+    if os.path.exists(p):
+        C = pd.read_csv(p).set_index("panel")
+        L = []
+        for pn in PN:
+            if pn not in C.index:
+                continue
+            c = C.loc[pn]; a = AB[pn]
+            for k, col, f in (("MaeCov", "mae_cov", "{:.2f}"), ("MaeUnc", "mae_unc", "{:.2f}"),
+                              ("Delta", "delta", "{:.2f}"), ("DeltaLo", "delta_lo", "{:.2f}"),
+                              ("DeltaHi", "delta_hi", "{:.2f}")):
+                mac(f"Cx{a}{k}", c[col], f)
+            mac(f"Cx{a}RCov", c.r_cov, "{:.2f}", sign=True)
+            mac(f"Cx{a}RUnc", c.r_unc, "{:.2f}", sign=True)
+            mac(f"Cx{a}SignCov", 100 * c.sign_cov, "{:.0f}")
+            mac(f"Cx{a}SignUnc", 100 * c.sign_unc, "{:.0f}")
+            mac(f"Cx{a}Share", 100 * c.share_better, "{:.0f}")
+            mac(f"Cx{a}N", f"{int(c.n_splits)}")
+            L.append(f"{pn} & {int(c.n_splits)} & {c.mae_cov:.2f} & {c.mae_unc:.2f} & "
+                     f"{z(c.delta)} [{z(c.delta_lo)}, {z(c.delta_hi)}] & "
+                     f"{z(c.r_cov)} & {z(c.r_unc)} & {100 * c.sign_cov:.0f}\\% & "
+                     f"{100 * c.sign_unc:.0f}\\% & {z(c.bias_cov)} & {z(c.bias_unc)} \\\\")
+        write("tab_r5_coverage.tex", "\n".join(L) + "\n", "summary_coverage.csv")
+    # ---- 2. several decision dates and explicit costs ----
+    p = os.path.join(RES, "summary_origins.csv")
+    if os.path.exists(p):
+        O = pd.read_csv(p)
+        L = []
+        for pn in PN:
+            g = O[O.panel == pn]
+            if g.empty:
+                continue
+            a = AB[pn]
+            per = g[g.origin != "pooled"]
+            pool = g[g.origin == "pooled"].iloc[0]
+            mac(f"Or{a}Norig", f"{len(per)}"); mac(f"Or{a}Nunits", f"{int(pool.n_splits)}")
+            mac(f"Or{a}R", pool.r, "{:.2f}", sign=True)
+            # a correlation that rounds to 1.00 is printed with three decimals
+            rf = lambda v: "{:.3f}" if abs(v) >= 0.995 else "{:.2f}"
+            mac(f"Or{a}RMin", per.r.min(), rf(per.r.min()), sign=True)
+            mac(f"Or{a}RMax", per.r.max(), rf(per.r.max()), sign=True)
+            mac(f"Or{a}Bias", pool.bias, "{:.2f}", sign=True)
+            for i, (_, r) in enumerate(per.iterrows()):
+                o = str(int(float(r.origin)))
+                L.append(f"{pn if i == 0 else ''} & {o[:4]}-{o[4:6]}-{o[6:]} & "
+                         f"{r.history_days / 30.44:.0f} & {int(r.n_splits)} & {zr(r.r)} & "
+                         f"{zr(r.rho)} & {z(r.bias)} & {r.mae:.2f} & {z(r.mean_D)} \\\\")
+            L.append(f"\\quad pooled & & & {int(pool.n_splits)} & {zr(pool.r)} & {zr(pool.rho)} & "
+                     f"{z(pool.bias)} & {pool.mae:.2f} & {z(pool.mean_D)} \\\\")
+            L.append("\\midrule")
+        write("tab_r5_origins.tex", "\n".join(L[:-1]) + "\n", "summary_origins.csv")
+    p = os.path.join(RES, "summary_costs.csv")
+    if os.path.exists(p):
+        K = pd.read_csv(p)
+        CN = {0.0: "Zero", 1.0: "One", 2.0: "Two", 3.0: "Three", 5.0: "Five"}
+        L = []
+        for pn in ("All",) + PN:
+            g = K[K.panel == pn]
+            if g.empty:
+                continue
+            a = "All" if pn == "All" else AB[pn]
+            for i, (_, r) in enumerate(g.iterrows()):
+                cn = CN[float(r.cost)]
+                for k, col in (("Always", "always"), ("Rule", "rule"), ("Oracle", "oracle"),
+                               ("Rma", "rule_minus_always"), ("RmaLo", "rma_lo"),
+                               ("RmaHi", "rma_hi"), ("RuleLo", "rule_lo"), ("RuleHi", "rule_hi"),
+                               ("Later", "rule_later"), ("Bc", "rule_bc_later")):
+                    if np.isfinite(r[col]):
+                        mac(f"Oc{a}{cn}{k}", r[col], "{:.2f}", sign=True)
+                mac(f"Oc{a}{cn}Unn", f"{int(r.unnecessary)}")
+                mac(f"Oc{a}{cn}Mis", f"{int(r.missed)}")
+                mac(f"Oc{a}{cn}Rate", 100 * r.retrain_rate, "{:.0f}")
+                if i == 0:
+                    mac(f"Oc{a}N", f"{int(r.n_units)}")
+                bc = z(r.rule_bc_later) if np.isfinite(r.rule_bc_later) else "--"
+                lat = z(r.rule_later) if np.isfinite(r.rule_later) else "--"
+                L.append(f"{('All panels' if pn == 'All' else pn) if i == 0 else ''} & "
+                         f"{r.cost:.0f} & {z(r.always)} & {z(r.rule)} & {z(r.oracle)} & "
+                         f"{z(r.rule_minus_always)} [{z(r.rma_lo)}, {z(r.rma_hi)}] & "
+                         f"{int(r.unnecessary)}/{int(r.missed)} & {lat} & {bc} \\\\")
+            L.append("\\midrule")
+        write("tab_r5_costs.tex", "\n".join(L[:-1]) + "\n", "summary_costs.csv")
+    # ---- 3. joint training and fine-tuning ----
+    p = os.path.join(RES, "summary_transfer.csv")
+    if os.path.exists(p):
+        T = pd.read_csv(p)
+        ARMS = [("src", "Src", "Source only, size-matched"),
+                ("ref", "Ref", "Target only (reference)"),
+                ("joint", "Joint", "Source + target, size-matched"),
+                ("joint_dep", "JointDep", "Deployed source pool + target"),
+                ("ft_src", "FtSrc", "Fine-tune source-only model on target"),
+                ("ft_dep", "FtDep", "Fine-tune deployed model on target")]
+        cols = [(pn, sp, a) for pn, sp, a, _ in ANCH
+                if not T[(T.panel == pn) & (T.split == sp)].empty]
+        L, S = [], []
+        for arm, nm, lab in ARMS:
+            cells, scells = [], []
+            for pn, sp, a in cols:
+                r = T[(T.panel == pn) & (T.split == sp) & (T.arm == arm)].iloc[0]
+                d = 2 if pn == "Nursing" else 1
+                mac(f"Tf{a}{nm}", r.red_vs_dep, "{:.%df}" % d, sign=True)
+                mac(f"Tf{a}{nm}U", abs(r.red_vs_dep), "{:.%df}" % d)
+                mac(f"Tf{a}{nm}Lo", r.red_vs_dep_lo, "{:.%df}" % d, sign=True)
+                mac(f"Tf{a}{nm}Hi", r.red_vs_dep_hi, "{:.%df}" % d, sign=True)
+                mac(f"Tf{a}{nm}VsRef", r.red_vs_ref, "{:.%df}" % d, sign=True)
+                cells.append(pct(r.red_vs_dep, d))
+                scells.append(f"{pct(r.red_vs_dep, d)} [{z(r.red_vs_dep_lo, d)}, "
+                              f"{z(r.red_vs_dep_hi, d)}]")
+            L.append(f"{lab} & " + " & ".join(cells) + " \\\\")
+            S.append(f"{lab} & " + " & ".join(scells) + " \\\\")
+        write("tab_r5_transfer.tex", "\n".join(L) + "\n", "summary_transfer.csv")
+        write("tab_r5_transfer_ci.tex", "\n".join(S) + "\n", "summary_transfer.csv")
+        n = T.groupby(["panel", "split"]).n_seeds.first()
+        mac("TfNurSeeds", f"{int(n.get(('Nursing', 'Ownership (For-profit -> Non-profit)'), 0))}")
+        # extra optimization budget of the joint arm on the deployed pool: its entity
+        # list is (deployed + target training) long, against the deployed size
+        Rw = pd.concat([pd.read_csv(f) for f in
+                        sorted(glob.glob(os.path.join(RES, "transfer_rows_*.csv")))])
+        Rw = Rw[Rw.panel != "Nursing"]
+        bud = (Rw.n_dep + Rw.n_t_tr) / Rw.n_dep
+        mac("TfBudMin", bud.min(), "{:.1f}"); mac("TfBudMax", bud.max(), "{:.1f}")
+        # anchors on which each target-using arm beats the target-only reference
+        bench = T[T.panel != "Nursing"].pivot_table(index=["panel", "split"], columns="arm",
+                                                    values="red_vs_dep")
+        mac("TfJointBeatsRefN", f"{int((bench.joint > bench.ref).sum())}")
+        mac("TfJointDepBeatsRefN", f"{int((bench.joint_dep > bench.ref).sum())}")
+        mac("TfBenchN", f"{len(bench)}")
+        mac("TfNtgNegN", f"{int((T[T.arm == 'joint'].ntg_vs_ref < 0).sum())}")
+        mac("TfAnchorN", f"{T[['panel', 'split']].drop_duplicates().shape[0]}")
+    # ---- 4. budget curve ----
+    p = os.path.join(RES, "summary_budget.csv")
+    if os.path.exists(p):
+        Bs = pd.read_csv(p)
+        MN = {1: "One", 2: "Two", 4: "Four"}
+        L = []
+        signs_stable = 0; nb_anch = 0
+        for pn, sp, a, lab in ANCH:
+            g = Bs[(Bs.panel == pn) & (Bs.split == sp)].set_index("mult")
+            if g.empty:
+                continue
+            nb_anch += 1
+            signs_stable += int(len(set(np.sign(g.h_sm_mean.round(6)))) == 1)
+            for mlt, r in g.iterrows():
+                m = MN[int(mlt)]
+                for k, col in (("Hsm", "h_sm_mean"), ("Hdep", "h_dep_mean"),
+                               ("Jdep", "joint_vs_dep_mean"), ("Jref", "joint_vs_ref_mean"),
+                               ("DepGain", "dep_gain_mean")):
+                    mac(f"Bu{a}{m}{k}", r[col], "{:.1f}", sign=True)
+                    mac(f"Bu{a}{m}{k}U", abs(r[col]), "{:.1f}")
+                L.append(f"{lab if mlt == g.index[0] else ''} & {int(mlt)}$\\times$ & "
+                         f"{pct(r.dep_gain_mean, 1)} & {pct(r.h_sm_mean, 1)} "
+                         f"({r.h_sm_std:.1f}) & {pct(r.h_dep_mean, 1)} & "
+                         f"{pct(r.joint_vs_dep_mean, 1)} & {pct(r.joint_vs_ref_mean, 1)} \\\\")
+            L.append("\\midrule")
+        write("tab_r5_budget.tex", "\n".join(L[:-1]) + "\n", "summary_budget.csv")
+        mac("BuSignStableN", f"{signs_stable}"); mac("BuAnchorN", f"{nb_anch}")
+
+
+def extended():
+    decision()
+    budgets_dates()
+    # ---- headroom under other model families (family.py) ----
+    F = cat("family_rows_*.csv")
+    if F is not None:
+        L, E = [], []
+        for p, sp, a, lab in ANCH:
+            g = F[(F.panel == p) & (F.split == sp)]
+            if g.empty:
+                continue
+            hc, ec = [], []
+            base = g[g.family == "ERM-Stem"].set_index("seed").transfer_mae_cat
+            for fam, nm in FAM:
+                f = g[g.family == fam]
+                if f.empty:
+                    hc.append("--"); ec.append("--"); continue
+                h, s = f.headroom_mae_cat.mean(), f.headroom_mae_cat.std(ddof=1)
+                small = abs(h) < 1 and not s >= 0.1
+                txt = pct(h, 2 if small else 1)
+                if len(f) > 1:
+                    txt += f" ({s:.2f})" if small else f" ({s:.1f})"
+                hc.append(txt)
+                mac(f"Fa{a}{nm}Two", h, "{:.2f}", sign=True)
+                # mean over seeds of the per-seed reduction, as in the case-study table
+                red = (100 * (base - f.set_index("seed").transfer_mae_cat) / base).mean()
+                ec.append(f"{f.transfer_mae_cat.mean():.4f}" +
+                          ("" if fam == "ERM-Stem" else f" ({red:+.1f}\\%)"))
+                mac(f"Fa{a}{nm}", h, "{:.1f}", sign=True)
+                mac(f"Fa{a}{nm}T", f.headroom_mae_total.mean(), "{:.1f}", sign=True)
+                mac(f"Fa{a}{nm}Err", f.transfer_mae_cat.mean(), "{:.4f}")
+                if fam != "ERM-Stem":
+                    mac(f"Fa{a}{nm}ErrRed", red, "{:.1f}", sign=True)
+                    mac(f"Fa{a}{nm}ErrRedU", red, "{:.1f}")
+            L.append(f"{lab} & " + " & ".join(hc) + " \\\\")
+            E.append(f"{lab} & " + " & ".join(ec) + " \\\\")
+        write("tab_family.tex", "\n".join(L) + "\n", "family_rows_*.csv")
+        write("tab_family_err.tex", "\n".join(E) + "\n", "family_rows_*.csv")
+        # sign agreement of headroom across families, per anchor
+        agree = 0; n = 0
+        for p, sp, a, _ in ANCH:
+            g = F[(F.panel == p) & (F.split == sp)].groupby("family").headroom_mae_cat.mean()
+            if len(g) == len(FAM):
+                n += 1; agree += int((np.sign(g) == np.sign(g["ERM-Stem"])).all())
+        mac("FaSignAgreeN", f"{agree}"); mac("FaAnchorN", f"{n}")
+        # summaries quoted in the main text: largest |headroom| on nursing in any
+        # family, and the range of the patch transformer's source-error reduction
+        # on the benchmark anchors
+        nur = F[F.panel == "Nursing"].groupby(["split", "family"]).headroom_mae_cat.mean()
+        mac("FaNurMaxAbs", nur.abs().max(), "{:.2f}")
+        red = []
+        for p, sp, a, _ in ANCH:
+            g = F[(F.panel == p) & (F.split == sp)]
+            if p == "Nursing" or g.empty:
+                continue
+            b = g[g.family == "ERM-Stem"].set_index("seed").transfer_mae_cat
+            pt = g[g.family == "Patch transformer"].set_index("seed").transfer_mae_cat
+            red.append((100 * (b - pt) / b).mean())
+        mac("FaPatchErrRedMin", min(red), "{:.1f}")
+        mac("FaPatchErrRedMax", max(red), "{:.1f}")
+
+    # ---- learning curve in the number of target entities (tentities.py) ----
+    for tag, pre in (("_stepmatched", "Te"), ("", "TeStd")):
+        fs = [f for f in sorted(glob.glob(os.path.join(RES, "tentity_rows_*.csv")))
+              if (f.endswith("_stepmatched.csv") == (tag == "_stepmatched"))]
+        if not fs:
+            continue
+        D = pd.concat([pd.read_csv(f) for f in fs], ignore_index=True)
+        L = []
+        for p, sp, a, lab in ANCH:
+            g = D[(D.panel == p) & (D.split == sp)]
+            if g.empty:
+                continue
+            m = g.groupby("K").agg(mt=("headroom_matched_mae_cat", "mean"),
+                                   ms=("headroom_matched_mae_cat", "std"),
+                                   dp=("headroom_deployed_mae_cat", "mean"),
+                                   ds=("headroom_deployed_mae_cat", "std"),
+                                   pos=("headroom_deployed_mae_cat", lambda x: int((x > 0).sum())),
+                                   n=("seed", "nunique"))
+            ks = list(m.index)
+            brk = next((k for i, k in enumerate(ks) if (m.dp.iloc[i:] > 0).all()), None)
+            mac(f"{pre}{a}Break", "n/a" if brk is None else cnt(brk))
+            mac(f"{pre}{a}Kmax", cnt(ks[-1]))
+            mac(f"{pre}{a}Kmin", cnt(ks[0]))
+            mac(f"{pre}{a}Ndep", cnt(g.n_deployed.iloc[0]))
+            # labeled target data behind "K entities": the early-stopping set is kept
+            # at full size for every K (sizes recomputed by an_tentity_sizes.py)
+            szp = os.path.join(RES, "tentity_sizes.csv")
+            if pre == "Te" and os.path.exists(szp):
+                sz = pd.read_csv(szp)
+                sz = sz[(sz.panel == p) & (sz.split == sp)]
+                if len(sz):
+                    nva, nte = int(sz.n_va.iloc[0]), int(sz.n_te.iloc[0])
+                    assert (sz.n_va == nva).all() and (sz.n_te == nte).all()
+                    assert int(g.n_test.iloc[0]) == nte and int(ks[-1]) == int(sz.n_tr.iloc[0])
+                    mac(f"Te{a}Nva", cnt(nva)); mac(f"Te{a}Nte", cnt(nte))
+                    if brk is not None:
+                        mac(f"Te{a}BreakLab", cnt(int(brk) + nva))
+            # nursing headroom is a few hundredths of a percent: two decimals there
+            dec = 2 if p == "Nursing" else 1
+            fmt = "{:.%df}" % dec
+            mac(f"{pre}{a}DepFull", m.dp.iloc[-1], fmt, sign=True)
+            mac(f"{pre}{a}DepFullU", m.dp.iloc[-1], fmt)
+            mac(f"{pre}{a}DepMin", m.dp.iloc[0], fmt, sign=True)
+            mac(f"{pre}{a}MatFull", m.mt.iloc[-1], fmt, sign=True)
+            mac(f"{pre}{a}MatMin", m.mt.iloc[0], fmt, sign=True)
+            if len(ks) > 1:
+                mac(f"{pre}{a}DepPrev", m.dp.iloc[-2], fmt, sign=True)
+                mac(f"{pre}{a}Kprev", cnt(ks[-2]))
+            if tag == "_stepmatched":
+                for i, k in enumerate(ks):
+                    one = m.n.iloc[i] < 2
+                    sd_m = "" if one else f" ({m.ms.iloc[i]:.{dec}f})"
+                    sd_d = "" if one else f" ({m.ds.iloc[i]:.{dec}f})"
+                    L.append(f"{lab if i == 0 else ''} & {cnt(k)} & {pct(m.mt.iloc[i], dec)}"
+                             f"{sd_m} & {pct(m.dp.iloc[i], dec)}{sd_d} & "
+                             f"{int(m.pos.iloc[i])} of {int(m.n.iloc[i])} \\\\")
+                L.append("\\midrule")
+        if tag == "_stepmatched" and L:
+            write("tab_tentity.tex", "\n".join(L[:-1]) + "\n", "tentity_rows_*_stepmatched.csv")
+
+    # ---- bias correction of the observed-history estimate (an_calibration.py) ----
+    cp = os.path.join(RES, "calibration_table.csv")
+    if os.path.exists(cp):
+        C = pd.read_csv(cp)
+        short = {"raw": "Raw", "shift (cross-panel)": "Shift", "line (cross-panel)": "Line",
+                 "shift (earlier splits, same panel)": "ShiftIn",
+                 "line (earlier splits, same panel)": "LineIn"}
+        nice = {"raw": "none (as reported)",
+                "shift (cross-panel)": "subtract other panels' mean bias",
+                "line (cross-panel)": "linear map fitted on other panels",
+                "shift (earlier splits, same panel)": "subtract mean bias of earlier splits",
+                "line (earlier splits, same panel)": "linear map fitted on earlier splits"}
+        L = []
+        for p in ("Nursing", "Electricity", "Traffic", "Solar"):
+            g = C[C.panel == p]
+            for i, r in enumerate(g.itertuples()):
+                L.append(f"{p if i == 0 else ''} & {nice[r.correction]} & {r.mae:.2f} & "
+                         f"{r.bias:+.2f} & {100 * r.agree:.0f}\\% \\\\")
+                mac(f"Cal{AB[p]}{short[r.correction]}", r.mae, "{:.2f}")
+                mac(f"Cal{AB[p]}{short[r.correction]}Bias", r.bias, sign=True)
+                mac(f"Cal{AB[p]}{short[r.correction]}Agree", 100 * r.agree, "{:.0f}")
+            L.append("\\midrule")
+        write("tab_calibration.tex", "\n".join(L[:-1]) + "\n", "calibration_table.csv")
+
+    # ---- classical fits that fell back to seasonal naive (an_fallbacks.py; an
+    # upper bound, since a converged fit can coincide with seasonal naive) ----
+    fp = os.path.join(RES, "classical_fallbacks.csv")
+    fb = pd.read_csv(fp) if os.path.exists(fp) else None
+    if fb is not None:
+        g = fb.groupby("method")[["series", "fallbacks"]].sum()
+        mac("ClFallbackPct", 100 * float((g.fallbacks / g.series).max()), "{:.2f}")
+        mac("ClSeries", f"{int(g.series.max()):,}".replace(",", "{,}"))
+
+
+if __name__ == "__main__":
+    main()
